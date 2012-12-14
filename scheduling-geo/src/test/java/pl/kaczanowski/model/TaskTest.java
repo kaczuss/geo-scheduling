@@ -12,7 +12,7 @@ public class TaskTest {
 
 	@Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "getInvalidTicks")
 	public void testTask(final int ticks) {
-		new Task(ticks);
+		new Task(1, ticks);
 
 	}
 
