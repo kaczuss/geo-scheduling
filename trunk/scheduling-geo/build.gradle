@@ -1,7 +1,9 @@
+
 apply plugin: "java"
 apply plugin: "maven"
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
+//TODO: poprawić konfigurację checkstyle, tak żeby była taka sama w eclipsie i w gradle!
 apply plugin: 'checkstyle'
 
 group = "pl.kaczanowski"
@@ -52,7 +54,6 @@ dependencies {
     runtime configurations.apiRuntime
     runtime configurations.implRuntime
 }
-
 jar {
     from sourceSets.api.output
     from sourceSets.impl.output

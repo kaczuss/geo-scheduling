@@ -107,6 +107,6 @@
     <property name="message" value="Line has trailing spaces."/>
   </module>
   <module name="SuppressionFilter">
-    <property name="file" value="config/checkstyle/suppressions.xml"/>
+    <property name="file" value="G:\workspace\geo\geo-scheduling\trunk\scheduling-geo\config\eclipse-cs\suppressions.xml"/>
   </module>
 </module>
