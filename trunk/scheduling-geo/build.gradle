@@ -11,6 +11,11 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType(Compile) {
+	options.encoding = 'UTF-8'
+	options.compilerArgs = ['-source', '7', '-target', '7']
+}
+
 sourceSets.all { set ->
     def jarTask = task("${set.name}Jar", type: Jar) {
         baseName = baseName + "-$set.name"
