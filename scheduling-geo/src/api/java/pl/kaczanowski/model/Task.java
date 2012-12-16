@@ -8,11 +8,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  * @author pawel
  * 
  */
-public class Task {
+public class Task extends Vertex {
 
 	private final int ticks;
-
-	private final int id;
 
 	/**
 	 * @param id
@@ -21,25 +19,25 @@ public class Task {
 	 *            - number of ticks to execute task (time of task execution)
 	 */
 	public Task(final int id, final int ticks) {
+		super(id);
 		checkArgument(ticks > 0, "ticks must be positive value");
 		this.ticks = ticks;
-		this.id = id;
 	}
 
-	/**
-	 * 
-	 * @return task id
-	 */
-	public int getId() {
-		return id;
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Task [getId()=");
+		builder.append(getId());
+		builder.append(", getTicks()=");
+		builder.append(getTicks());
+		builder.append("]");
+		return builder.toString();
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
-		return result;
+		return super.hashCode();
 	}
 
 	@Override
@@ -47,28 +45,13 @@ public class Task {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
+		if (!super.equals(obj)) {
 			return false;
 		}
 		if (!(obj instanceof Task)) {
 			return false;
 		}
-		Task other = (Task) obj;
-		if (id != other.id) {
-			return false;
-		}
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Task [ticks=");
-		builder.append(ticks);
-		builder.append(", id=");
-		builder.append(id);
-		builder.append("]");
-		return builder.toString();
 	}
 
 	/**
