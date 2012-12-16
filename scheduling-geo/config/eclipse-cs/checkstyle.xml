@@ -97,7 +97,9 @@
     </module>
   </module>
   <module name="JavadocPackage"/>
-  <module name="NewlineAtEndOfFile"/>
+  <module name="NewlineAtEndOfFile">
+    <property name="lineSeparator" value="crlf"/>
+  </module>
   <module name="Translation"/>
   <module name="FileLength">
     <property name="max" value="5000"/>
@@ -107,6 +109,6 @@
     <property name="message" value="Line has trailing spaces."/>
   </module>
   <module name="SuppressionFilter">
-    <property name="file" value="G:\workspace\geo\geo-scheduling\trunk\scheduling-geo\config\eclipse-cs\suppressions.xml"/>
+    <property name="file" value="G:\workspace\geo\geo-scheduling\scheduling-geo\config\checkstyle\suppressions.xml"/>
   </module>
 </module>

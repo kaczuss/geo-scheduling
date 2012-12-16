@@ -6,4 +6,5 @@
 
 <suppressions>
 	<suppress files="[\\/]src[\\/]test[\\/]" checks="Javadoc.*" />
+	<suppress files="[\\/]src[\\/]test[\\/]" checks="MagicNumber" />
 </suppressions>

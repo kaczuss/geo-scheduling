@@ -97,7 +97,9 @@
     </module>
   </module>
   <module name="JavadocPackage"/>
-  <module name="NewlineAtEndOfFile"/>
+  <module name="NewlineAtEndOfFile">
+    <property name="lineSeparator" value="crlf"/>
+  </module>
   <module name="Translation"/>
   <module name="FileLength">
     <property name="max" value="5000"/>
