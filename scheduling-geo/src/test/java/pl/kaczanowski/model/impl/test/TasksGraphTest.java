@@ -1,4 +1,4 @@
-package pl.kaczanowski.model.impl;
+package pl.kaczanowski.model.impl.test;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.testng.Assert.assertEquals;
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.fest.assertions.Condition;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import pl.kaczanowski.model.Edge;
 import pl.kaczanowski.model.Task;
+import pl.kaczanowski.model.impl.TasksGraph;
 
 import com.google.common.collect.Lists;
 
@@ -30,10 +30,10 @@ public class TasksGraphTest {
 	}
 
 	@Test(dataProvider = "getSampleGraphs")
-	public void checkTasks(final Integer[][] connections, final int[] executionTime) {
+	public void shuldConstructGraph(final Integer[][] connections, final int[] executionTime) {
 
-		TasksGraph sg = buildGraph(connections, executionTime);
-		List<Task> tasks = sg.getTasks();
+		TasksGraph sut = buildGraph(connections, executionTime);
+		List<Task> tasks = sut.getTasks();
 
 		List<Task> expected = Lists.newArrayListWithExpectedSize(executionTime.length);
 		for (int i = 0; i < executionTime.length; i++) {
@@ -41,35 +41,13 @@ public class TasksGraphTest {
 
 		}
 
-		assertThat(tasks).hasSize(executionTime.length).contains(expected.toArray())
-				.satisfies(new Condition<List<?>>() {
+		assertThat(tasks).hasSize(executionTime.length).contains(expected.toArray());
 
-					@Override
-					public boolean matches(final List<?> value) {
-
-						for (Object o : value) {
-							Task task = (Task) o;
-							if (executionTime[task.getId()] != task.getTicks()) {
-								return false;
-							}
-						}
-						return true;
-					}
-				});
-	}
-
-	private TasksGraph buildGraph(final Integer[][] connections, final int[] executionTime) {
-		return new TasksGraph.GraphBuilder().create(connections, executionTime);
-	}
-
-	@Test(dataProvider = "getSampleGraphs")
-	public void checkConnections(final Integer[][] connections, final int[] executionTime) {
-		TasksGraph tasksGraph = buildGraph(connections, executionTime);
-
-		Map<Task, ? extends Collection<Edge<Task>>> connectionsGraph = tasksGraph.getConnections();
+		Map<Task, ? extends Collection<Edge<Task>>> connectionsGraph = sut.getConnections();
 
 		assertThat(connectionsGraph).hasSize(connections.length);
 
+		// FIXME: może trochę lepsze sprawdzanie
 		for (Entry<Task, ? extends Collection<Edge<Task>>> row : connectionsGraph.entrySet()) {
 
 			// check if has proper edges
@@ -92,6 +70,10 @@ public class TasksGraphTest {
 			}
 
 		}
-
 	}
+
+	private TasksGraph buildGraph(final Integer[][] connections, final int[] executionTime) {
+		return new TasksGraph.GraphBuilder().create(connections, executionTime);
+	}
+
 }

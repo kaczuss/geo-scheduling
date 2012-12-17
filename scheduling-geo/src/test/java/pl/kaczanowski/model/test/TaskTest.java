@@ -1,7 +1,9 @@
-package pl.kaczanowski.model;
+package pl.kaczanowski.model.test;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import pl.kaczanowski.model.Task;
 
 public class TaskTest {
 

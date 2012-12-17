@@ -107,4 +107,42 @@ public final class TasksGraph implements Graph {
 		return connections;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((connections == null) ? 0 : connections.hashCode());
+		result = prime * result + ((tasks == null) ? 0 : tasks.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TasksGraph)) {
+			return false;
+		}
+		TasksGraph other = (TasksGraph) obj;
+		if (connections == null) {
+			if (other.connections != null) {
+				return false;
+			}
+		} else if (!connections.equals(other.connections)) {
+			return false;
+		}
+		if (tasks == null) {
+			if (other.tasks != null) {
+				return false;
+			}
+		} else if (!tasks.equals(other.tasks)) {
+			return false;
+		}
+		return true;
+	}
+
 }

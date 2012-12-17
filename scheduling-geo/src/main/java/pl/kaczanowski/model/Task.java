@@ -37,6 +37,7 @@ public class Task extends Vertex {
 
 	@Override
 	public int hashCode() {
+		final int prime = 31;
 		return super.hashCode();
 	}
 
@@ -49,6 +50,10 @@ public class Task extends Vertex {
 			return false;
 		}
 		if (!(obj instanceof Task)) {
+			return false;
+		}
+		Task other = (Task) obj;
+		if (ticks != other.ticks) {
 			return false;
 		}
 		return true;
