@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -28,6 +30,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Files;
 
@@ -101,14 +105,18 @@ public class SchedulingGraphsDataProvider {
 			}
 		}
 
-		private Integer[][] getProcessDivision(final List<String> processorDevision) {
-			Integer[][] result = new Integer[processorDevision.size()][];
+		private Map<Integer, Set<Integer>> getProcessDivision(final List<String> processorDevision) {
+			Map<Integer, Set<Integer>> result = Maps.newHashMapWithExpectedSize(processorDevision.size());
 
 			for (int i = 0; i < processorDevision.size(); i++) {
-				result[i] = getIntegerArray(processorDevision.get(i));
+				result.put(i, getIntegerSet(processorDevision.get(i)));
 			}
 
 			return result;
+		}
+
+		private Set<Integer> getIntegerSet(final String integersLine) {
+			return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
 		}
 
 		private ArrayList<String> readFile(final File graphFile) throws IOException {
@@ -140,9 +148,8 @@ public class SchedulingGraphsDataProvider {
 			return result;
 		}
 
-		private Integer[] getIntegerArray(final String connectionsList) {
-			Iterable<Integer> iterable =
-					Iterables.transform(Splitter.on(';').split(connectionsList), stringToInteger());
+		private Integer[] getIntegerArray(final String integersLine) {
+			Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
 			return Iterables.toArray(iterable, Integer.class);
 		}
 

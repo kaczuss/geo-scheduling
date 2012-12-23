@@ -2,6 +2,9 @@ package pl.kaczanowski.algorithm.test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.testng.annotations.Test;
 
 import pl.kaczanowski.algorithm.DynamicHeightAlgorithm;
@@ -13,8 +16,8 @@ public class DynamicHeightAlgorithmTest {
 
 	@Test(dataProviderClass = SchedulingGraphsDataProvider.class, dataProvider = "getSchedulingPolicyData")
 	public void shouldReturnLongestPathForTwoProcessors(final ModulesGraph modulesGraph,
-			final ProcessorsGraph processorsGraph, final Integer[][] processorDevision, final Integer startModule,
-			final Integer expectedCost) {
+			final ProcessorsGraph processorsGraph, final Map<Integer, Set<Integer>> processorDevision,
+			final Integer startModule, final Integer expectedCost) {
 
 		DynamicHeightAlgorithm sut = new DynamicHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
 
