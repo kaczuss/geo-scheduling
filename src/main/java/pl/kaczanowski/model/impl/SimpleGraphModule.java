@@ -14,7 +14,5 @@ import com.google.inject.AbstractModule;
 public class SimpleGraphModule extends AbstractModule {
 	@Override
 	protected void configure() {
-		Integer i = null;
-		i.byteValue();
 	}
 }
