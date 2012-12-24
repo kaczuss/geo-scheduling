@@ -8,6 +8,7 @@ import java.util.Set;
 import org.testng.annotations.Test;
 
 import pl.kaczanowski.algorithm.DynamicHeightAlgorithm;
+import pl.kaczanowski.algorithm.HeightAlgorithm;
 import pl.kaczanowski.graph.dataproviders.SchedulingGraphsDataProvider;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
@@ -19,7 +20,7 @@ public class DynamicHeightAlgorithmTest {
 			final ProcessorsGraph processorsGraph, final Map<Integer, Set<Integer>> processorDevision,
 			final Integer startModule, final Integer expectedCost) {
 
-		DynamicHeightAlgorithm sut = new DynamicHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
+		HeightAlgorithm sut = new DynamicHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
 
 		int cost = sut.getCost(startModule);
 

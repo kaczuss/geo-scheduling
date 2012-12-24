@@ -15,7 +15,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-public class DynamicHeightAlgorithm {
+public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
 	private final Logger log = LoggerFactory.getLogger(DynamicHeightAlgorithm.class);
 
@@ -45,6 +45,10 @@ public class DynamicHeightAlgorithm {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see pl.kaczanowski.algorithm.HeightAlgorithm#getCost(java.lang.Integer)
+	 */
+	@Override
 	public int getCost(final Integer taskId) {
 
 		int weight = modulesGraph.getCost(taskId);
