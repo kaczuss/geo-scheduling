@@ -1,6 +1,13 @@
 #liczba procesorów
 2
 
+#macierz procesorów
+;1
+1;
+
+#liczba procesorów
+2
+
 #podział na procesory
 0;1;2;3;4;5;6;7;8;9;11;12;13
 10;14

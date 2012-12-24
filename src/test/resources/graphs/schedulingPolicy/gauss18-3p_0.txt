@@ -1,3 +1,10 @@
+3
+
+#macierz procesorów
+;1;1
+1;;1
+1;1;
+
 #liczba procesorów
 3
 

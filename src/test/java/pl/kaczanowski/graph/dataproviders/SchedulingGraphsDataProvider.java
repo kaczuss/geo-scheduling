@@ -84,17 +84,22 @@ public class SchedulingGraphsDataProvider {
 				result[0] =
 						new ModulesGraph(treeName, taskCosts, getGraphConnections(graphLines.subList(1,
 								1 + taskCosts.length)));
-				result[1] =
-						new ProcessorsGraph(getProcessorsGraph(graphLines.subList(taskCosts.length + 1,
-								graphLines.size())));
 
 				List<String> policyLines = readFile(policyFile);
 
-				int processorDevisionLastLine = Integer.valueOf(policyLines.get(0));
-				result[2] = getProcessDivision(policyLines.subList(1, processorDevisionLastLine + 1));
+				int processorsNumber = Integer.valueOf(policyLines.get(0));
+				int processorDevisionLineNumber = processorsNumber + 1;
+				result[1] =
+						new ProcessorsGraph(getProcessorsGraph(policyLines.subList(1, processorDevisionLineNumber)));
+				int processorDevisionLastLine =
+						processorDevisionLineNumber + Integer.valueOf(policyLines.get(processorDevisionLineNumber))
+								+ 1;
+				result[2] =
+						getProcessDivision(policyLines.subList(processorDevisionLineNumber + 1,
+								processorDevisionLastLine));
 
-				result[3] = Integer.valueOf(policyLines.get(processorDevisionLastLine + 1));
-				result[4] = Integer.valueOf(policyLines.get(processorDevisionLastLine + 2));
+				result[3] = Integer.valueOf(policyLines.get(processorDevisionLastLine));
+				result[4] = Integer.valueOf(policyLines.get(processorDevisionLastLine + 1));
 
 				currentSchedulingPolicyFile++;
 

@@ -1,3 +1,9 @@
+2
+
+#macierz procesorów
+;1
+1;
+
 #liczba procesorów
 2
 
