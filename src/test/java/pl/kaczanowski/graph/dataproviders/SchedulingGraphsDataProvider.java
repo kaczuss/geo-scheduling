@@ -41,16 +41,150 @@ import com.google.common.io.Files;
  */
 public class SchedulingGraphsDataProvider {
 
-	private static class GraphFileIterator implements Iterator<Object[]> {
+	private static abstract class AbstracGraphFileDataIterator implements Iterator<Object[]> {
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		protected ModulesGraph getModuleGraph(final String treeName) throws IOException {
+			File graphFile = new File("src/test/resources/graphs/" + treeName + ".txt");
+
+			List<String> graphLines = readFile(graphFile);
+
+			Integer[] taskCosts = getIntegerArray(graphLines.get(0));
+			ModulesGraph modulesGraph =
+					new ModulesGraph(treeName, taskCosts, getGraphConnections(graphLines.subList(1,
+							1 + taskCosts.length)));
+			return modulesGraph;
+		}
+
+		protected Map<Integer, Set<Integer>> getProcessDivision(final List<String> processorDevision) {
+			Map<Integer, Set<Integer>> result = Maps.newHashMapWithExpectedSize(processorDevision.size());
+
+			for (int i = 0; i < processorDevision.size(); i++) {
+				result.put(i, getIntegerSet(processorDevision.get(i)));
+			}
+
+			return result;
+		}
+
+		protected Set<Integer> getIntegerSet(final String integersLine) {
+			return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
+		}
+
+		protected ArrayList<String> readFile(final File graphFile) throws IOException {
+			return Lists.newArrayList(Iterables.filter(Iterables.filter(
+					CharStreams.readLines(Files.newReaderSupplier(graphFile, Charsets.UTF_8)), isNotEmptyString()),
+					notStartsFrom('#')));
+		}
+
+		protected Integer[][] getProcessorsGraph(final List<String> processorsGraphMatrix) {
+
+			Integer[][] result = new Integer[processorsGraphMatrix.size()][processorsGraphMatrix.size()];
+
+			for (int i = 0; i < processorsGraphMatrix.size(); i++) {
+				result[i] = getIntegerArray(processorsGraphMatrix.get(i));
+
+			}
+
+			return result;
+		}
+
+		protected Integer[][] getGraphConnections(final List<String> connectionsMatrix) {
+
+			Integer[][] result = new Integer[connectionsMatrix.size()][connectionsMatrix.size()];
+
+			for (int i = 0; i < connectionsMatrix.size(); i++) {
+				result[i] = getIntegerArray(connectionsMatrix.get(i));
+			}
+
+			return result;
+		}
+
+		protected Integer[] getIntegerArray(final String integersLine) {
+			Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
+			return Iterables.toArray(iterable, Integer.class);
+		}
+
+		protected String getTreeGraphName(final File file) {
+			return file.getName().subSequence(0, file.getName().indexOf('_')).toString();
+		}
+
+	}
+
+	private static class SchedulingGraphFileIterator extends AbstracGraphFileDataIterator {
 
 		private static final Logger LOG = LoggerFactory
-				.getLogger(SchedulingGraphsDataProvider.GraphFileIterator.class);
+				.getLogger(SchedulingGraphsDataProvider.SchedulingGraphFileIterator.class);
+
+		private final List<File> scheduleFiles;
+
+		private int actualFile;
+
+		public SchedulingGraphFileIterator(final Collection<File> files) {
+			scheduleFiles = ImmutableList.copyOf(files);
+			actualFile = 0;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return actualFile <= scheduleFiles.size();
+		}
+
+		@Override
+		public Object[] next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			try {
+				File scheduleFile = scheduleFiles.get(actualFile);
+
+				// first line - tasks cost
+				Object[] result = new Object[4];
+				String treeName = getTreeGraphName(scheduleFile);
+
+				result[0] = getModuleGraph(treeName);
+
+				List<String> schedulingLines = readFile(scheduleFile);
+
+				int processorsNumber = Integer.valueOf(schedulingLines.get(0));
+				int processorDevisionLineNumber = processorsNumber + 1;
+				result[1] =
+						new ProcessorsGraph(
+								getProcessorsGraph(schedulingLines.subList(1, processorDevisionLineNumber)));
+				int processorDevisionLastLine =
+						processorDevisionLineNumber
+								+ Integer.valueOf(schedulingLines.get(processorDevisionLineNumber)) + 1;
+				result[2] =
+						getProcessDivision(schedulingLines.subList(processorDevisionLineNumber + 1,
+								processorDevisionLastLine));
+
+				result[3] = Integer.valueOf(schedulingLines.get(processorDevisionLastLine));
+
+				actualFile++;
+
+				return result;
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+				throw Throwables.propagate(e);
+			}
+		}
+
+	}
+
+	private static class SchedulingPolicyGraphFileIterator extends AbstracGraphFileDataIterator {
+
+		private static final Logger LOG = LoggerFactory
+				.getLogger(SchedulingGraphsDataProvider.SchedulingPolicyGraphFileIterator.class);
 
 		private final ImmutableList<File> schedulePolicyFiles;
 
 		private int currentSchedulingPolicyFile;
 
-		public GraphFileIterator(final Collection<File> files) {
+		public SchedulingPolicyGraphFileIterator(final Collection<File> files) {
 			checkNotNull(files);
 			this.schedulePolicyFiles = ImmutableList.copyOf(files);
 			currentSchedulingPolicyFile = 0;
@@ -71,19 +205,11 @@ public class SchedulingGraphsDataProvider {
 			try {
 				File policyFile = schedulePolicyFiles.get(currentSchedulingPolicyFile);
 
-				String treeName = policyFile.getName().subSequence(0, policyFile.getName().indexOf('_')).toString();
-
-				File graphFile = new File("src/test/resources/graphs/" + treeName + ".txt");
-
-				List<String> graphLines = readFile(graphFile);
-
 				// first line - tasks cost
 				Object[] result = new Object[5];
+				String treeName = getTreeGraphName(policyFile);
 
-				Integer[] taskCosts = getIntegerArray(graphLines.get(0));
-				result[0] =
-						new ModulesGraph(treeName, taskCosts, getGraphConnections(graphLines.subList(1,
-								1 + taskCosts.length)));
+				result[0] = getModuleGraph(treeName);
 
 				List<String> policyLines = readFile(policyFile);
 
@@ -110,59 +236,6 @@ public class SchedulingGraphsDataProvider {
 			}
 		}
 
-		private Map<Integer, Set<Integer>> getProcessDivision(final List<String> processorDevision) {
-			Map<Integer, Set<Integer>> result = Maps.newHashMapWithExpectedSize(processorDevision.size());
-
-			for (int i = 0; i < processorDevision.size(); i++) {
-				result.put(i, getIntegerSet(processorDevision.get(i)));
-			}
-
-			return result;
-		}
-
-		private Set<Integer> getIntegerSet(final String integersLine) {
-			return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
-		}
-
-		private ArrayList<String> readFile(final File graphFile) throws IOException {
-			return Lists.newArrayList(Iterables.filter(Iterables.filter(
-					CharStreams.readLines(Files.newReaderSupplier(graphFile, Charsets.UTF_8)), isNotEmptyString()),
-					notStartsFrom('#')));
-		}
-
-		private Integer[][] getProcessorsGraph(final List<String> processorsGraphMatrix) {
-
-			Integer[][] result = new Integer[processorsGraphMatrix.size()][processorsGraphMatrix.size()];
-
-			for (int i = 0; i < processorsGraphMatrix.size(); i++) {
-				result[i] = getIntegerArray(processorsGraphMatrix.get(i));
-
-			}
-
-			return result;
-		}
-
-		private Integer[][] getGraphConnections(final List<String> connectionsMatrix) {
-
-			Integer[][] result = new Integer[connectionsMatrix.size()][connectionsMatrix.size()];
-
-			for (int i = 0; i < connectionsMatrix.size(); i++) {
-				result[i] = getIntegerArray(connectionsMatrix.get(i));
-			}
-
-			return result;
-		}
-
-		private Integer[] getIntegerArray(final String integersLine) {
-			Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
-			return Iterables.toArray(iterable, Integer.class);
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
 	}
 
 	@DataProvider
@@ -170,7 +243,17 @@ public class SchedulingGraphsDataProvider {
 		Collection<File> listFiles =
 				FileUtils.listFiles(new File("src/test/resources/graphs/schedulingPolicy"),
 						FileFilterUtils.fileFileFilter(), null);
-		return new GraphFileIterator(listFiles);
+		return new SchedulingPolicyGraphFileIterator(listFiles);
+
+	}
+
+	@DataProvider
+	public static Iterator<Object[]> getSchedulingData() {
+
+		Collection<File> listFiles =
+				FileUtils.listFiles(new File("src/test/resources/graphs/scheduling"),
+						FileFilterUtils.fileFileFilter(), null);
+		return new SchedulingGraphFileIterator(listFiles);
 
 	}
 }
