@@ -82,7 +82,7 @@ public class Processor {
 	}
 
 	public void executeNext(@Nonnull final Task nextTask, @Nonnull final ProcessorsGraph processorsGraph,
-			final Map<Integer, Set<Task>> tasksParial) {
+			final Map<Integer, Set<Task>> tasksParial, final ModulesGraph modulesGraph) {
 		checkState(isFree(), "Now executed is other task: " + activeTask);
 
 		checkState(tasksToExecute.contains(nextTask), "Cannot assign task " + nextTask + " on processor " + this);
@@ -91,7 +91,9 @@ public class Processor {
 
 		if (!Iterables.isEmpty(nextTask.getParentTasks())) {
 			for (Task parentTask : nextTask.getParentTasks()) {
-				time += processorsGraph.getChangeCost(getFromProcessorId(parentTask, tasksParial), id);
+				time +=
+						processorsGraph.getChangeCost(getFromProcessorId(parentTask, tasksParial), id)
+								* modulesGraph.getChangeTime(parentTask.getId(), nextTask.getId());
 			}
 		}
 		this.reservedTillTime = this.actualTime + time;
@@ -174,8 +176,7 @@ public class Processor {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Processor [id=").append(id).append(", reservedTillTime=").append(reservedTillTime)
-				.append(", actualTime=").append(actualTime).append(", activeTask=").append(activeTask)
-				.append(", tasksToExecute=").append(tasksToExecute).append("]");
+				.append(", actualTime=").append(actualTime).append(", activeTask=").append(activeTask).append("]");
 		return builder.toString();
 	}
 

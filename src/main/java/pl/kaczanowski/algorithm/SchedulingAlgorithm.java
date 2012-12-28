@@ -54,8 +54,9 @@ public class SchedulingAlgorithm {
 					log.debug("processor is free " + processor);
 					Task nextTask = processor.getNextTask(ended, heightAlgorithm);
 					if (nextTask != null) {
-						log.debug("EXEC task " + nextTask.getId() + " on processor " + processor.getId());
-						processor.executeNext(nextTask, processorsGraph, tasksPartial);
+						log.debug("EXEC time=" + time + " task=" + nextTask.getId() + " on processor="
+								+ processor.getId());
+						processor.executeNext(nextTask, processorsGraph, tasksPartial, modulesGraph);
 					}
 				}
 			}

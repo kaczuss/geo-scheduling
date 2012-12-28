@@ -115,7 +115,7 @@ public class ModulesGraph {
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append("Task [id=").append(id).append(", ended=").append(ended).append(", cost=").append(cost)
-					.append(", parentTasks=").append(parentTasks).append("]");
+					.append("]");
 			return builder.toString();
 		}
 
