@@ -1,16 +1,31 @@
 package pl.kaczanowski.algorithm;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.collections.Maps;
+import org.testng.internal.annotations.Sets;
+
 import pl.kaczanowski.model.ModulesGraph;
+import pl.kaczanowski.model.ModulesGraph.Task;
 import pl.kaczanowski.model.ProcessorsGraph;
+import pl.kaczanowski.model.ProcessorsGraph.Processor;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 
 /**
  * Algorithm for scheduling.
  * @author kaczanowskip
  */
 public class SchedulingAlgorithm {
+
+	private final Logger log = LoggerFactory.getLogger(SchedulingAlgorithm.class);
 
 	private final HeightAlgorithm heightAlgorithm;
 	private ModulesGraph modulesGraph;
@@ -24,7 +39,50 @@ public class SchedulingAlgorithm {
 	}
 
 	public int getExecutionTime(final Map<Integer, Set<Integer>> processorsPartial) {
-		return 0;
+
+		int time = 0;
+
+		List<Task> tasks = modulesGraph.getTasksCopy();
+
+		Map<Integer, Set<Task>> tasksParial = getTasksPartial(processorsPartial, tasks);
+		List<Processor> processors = processorsGraph.getProcessorCopies(tasksParial);
+
+		while (Iterables.any(tasks, Task.IS_TASK_NOT_ENDED)) {
+			Collection<Task> ended = Collections2.filter(tasks, Task.IS_TASK_ENDED);
+			for (Processor processor : processors) {
+				if (processor.isFree()) {
+					log.debug("processor is free " + processor);
+					Task nextTask = processor.getNextTask(ended, heightAlgorithm);
+					if (nextTask != null) {
+						processor.executeNext(nextTask, processorsGraph, tasksParial);
+					}
+				}
+				processor.tick();
+			}
+
+			log.debug("tick= " + time);
+
+			++time;
+		}
+		return time;
+
+	}
+
+	private Map<Integer, Set<Task>> getTasksPartial(final Map<Integer, Set<Integer>> processorsPartial,
+			final List<Task> tasks) {
+		Map<Integer, Set<Task>> result = Maps.newHashMap();
+
+		for (Entry<Integer, Set<Integer>> processorEntry : processorsPartial.entrySet()) {
+			Set<Task> tasksOnProcessor = Sets.newHashSet();
+
+			for (Integer taskId : processorEntry.getValue()) {
+				tasksOnProcessor.add(tasks.get(taskId));
+			}
+
+			result.put(processorEntry.getKey(), tasksOnProcessor);
+		}
+
+		return result;
 	}
 
 }

@@ -17,6 +17,7 @@ import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 
 public class SchedulingAlgorithmTest {
+
 	@Test(dataProviderClass = SchedulingGraphsDataProvider.class, dataProvider = "getSchedulingData")
 	public void shouldReturnProperExecutionTime(final ModulesGraph modulesGraph,
 			final ProcessorsGraph processorsGraph, final Map<Integer, Set<Integer>> processorsPartial,
@@ -32,4 +33,5 @@ public class SchedulingAlgorithmTest {
 		assertThat(executionTime).isEqualTo(expectedExecutionTime);
 
 	}
+
 }

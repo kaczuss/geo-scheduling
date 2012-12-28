@@ -130,7 +130,7 @@ public class SchedulingGraphsDataProvider {
 
 		@Override
 		public boolean hasNext() {
-			return actualFile <= scheduleFiles.size();
+			return actualFile < scheduleFiles.size();
 		}
 
 		@Override
