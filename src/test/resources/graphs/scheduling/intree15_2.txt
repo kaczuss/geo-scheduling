@@ -1,0 +1,17 @@
+#liczba procesorów
+2
+
+#macierz procesorów
+;1
+1;
+
+#liczba użytych procesorów
+2
+
+#podział na procesory
+0;1;4;5;8;10;12
+2;3;6;7;9;11;13;14
+
+#oczekiwany rezultat
+10
+

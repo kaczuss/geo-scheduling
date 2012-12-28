@@ -13,8 +13,8 @@ import org.testng.internal.annotations.Sets;
 
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ModulesGraph.Task;
+import pl.kaczanowski.model.Processor;
 import pl.kaczanowski.model.ProcessorsGraph;
-import pl.kaczanowski.model.ProcessorsGraph.Processor;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
@@ -44,8 +44,8 @@ public class SchedulingAlgorithm {
 
 		List<Task> tasks = modulesGraph.getTasksCopy();
 
-		Map<Integer, Set<Task>> tasksParial = getTasksPartial(processorsPartial, tasks);
-		List<Processor> processors = processorsGraph.getProcessorCopies(tasksParial);
+		Map<Integer, Set<Task>> tasksPartial = getTasksPartial(processorsPartial, tasks);
+		List<Processor> processors = processorsGraph.getProcessorCopies(tasksPartial);
 
 		while (Iterables.any(tasks, Task.IS_TASK_NOT_ENDED)) {
 			Collection<Task> ended = Collections2.filter(tasks, Task.IS_TASK_ENDED);
@@ -54,15 +54,17 @@ public class SchedulingAlgorithm {
 					log.debug("processor is free " + processor);
 					Task nextTask = processor.getNextTask(ended, heightAlgorithm);
 					if (nextTask != null) {
-						processor.executeNext(nextTask, processorsGraph, tasksParial);
+						log.debug("EXEC task " + nextTask.getId() + " on processor " + processor.getId());
+						processor.executeNext(nextTask, processorsGraph, tasksPartial);
 					}
 				}
+			}
+			for (Processor processor : processors) {
 				processor.tick();
 			}
 
-			log.debug("tick= " + time);
-
 			++time;
+			log.debug("tick= " + time);
 		}
 		return time;
 
