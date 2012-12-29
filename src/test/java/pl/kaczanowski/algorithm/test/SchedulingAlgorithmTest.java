@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import pl.kaczanowski.algorithm.HeightAlgorithm;
+import pl.kaczanowski.algorithm.DynamicHeightAlgorithm;
 import pl.kaczanowski.algorithm.SchedulingAlgorithm;
 import pl.kaczanowski.graph.dataproviders.SchedulingGraphsDataProvider;
 import pl.kaczanowski.model.ModulesGraph;
@@ -28,10 +28,17 @@ public class SchedulingAlgorithmTest {
 			final int expectedExecutionTime) {
 		log.debug("check scheduling execution time for " + modulesGraph.getName());
 
-		HeightAlgorithm heightAlgorithmStub = mock(HeightAlgorithm.class);
+		DynamicHeightAlgorithm.Factory heightAlgorithmFactoryStub = mock(DynamicHeightAlgorithm.Factory.class);
+
+		DynamicHeightAlgorithm heightAlgorithmStub = mock(DynamicHeightAlgorithm.class);
+
 		when(heightAlgorithmStub.getCost(anyInt())).thenReturn(1);
 
-		SchedulingAlgorithm sut = new SchedulingAlgorithm(heightAlgorithmStub, modulesGraph, processorsGraph);
+		when(heightAlgorithmFactoryStub.create(modulesGraph, processorsGraph, processorsPartial)).thenReturn(
+				heightAlgorithmStub);
+
+		SchedulingAlgorithm sut =
+				new SchedulingAlgorithm.Factory(heightAlgorithmFactoryStub).create(modulesGraph, processorsGraph);
 
 		int executionTime = sut.getExecutionTime(processorsPartial);
 

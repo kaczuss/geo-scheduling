@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.collections.Maps;
@@ -18,6 +20,7 @@ import pl.kaczanowski.model.ProcessorsGraph;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
 
 /**
  * Algorithm for scheduling.
@@ -25,15 +28,31 @@ import com.google.common.collect.Iterables;
  */
 public class SchedulingAlgorithm {
 
+	public static class Factory {
+
+		private final DynamicHeightAlgorithm.Factory heightAlgorithm;
+
+		@Inject
+		public Factory(@Nonnull final DynamicHeightAlgorithm.Factory heightAlgorithm) {
+			this.heightAlgorithm = heightAlgorithm;
+		}
+
+		public SchedulingAlgorithm create(@Nonnull final ModulesGraph modulesGraph,
+				@Nonnull final ProcessorsGraph processorsGraph) {
+			return new SchedulingAlgorithm(heightAlgorithm, modulesGraph, processorsGraph);
+		}
+
+	}
+
 	private final Logger log = LoggerFactory.getLogger(SchedulingAlgorithm.class);
+	private final DynamicHeightAlgorithm.Factory heightAlgorithmFactory;
+	private final ModulesGraph modulesGraph;
 
-	private final HeightAlgorithm heightAlgorithm;
-	private ModulesGraph modulesGraph;
-	private ProcessorsGraph processorsGraph;
+	private final ProcessorsGraph processorsGraph;
 
-	public SchedulingAlgorithm(final HeightAlgorithm heightAlgorithm, final ModulesGraph modulesGraph,
-			final ProcessorsGraph processorsGraph) {
-		this.heightAlgorithm = heightAlgorithm;
+	private SchedulingAlgorithm(final DynamicHeightAlgorithm.Factory heightAlgorithmFactory,
+			final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph) {
+		this.heightAlgorithmFactory = heightAlgorithmFactory;
 		this.modulesGraph = modulesGraph;
 		this.processorsGraph = processorsGraph;
 	}
@@ -52,7 +71,9 @@ public class SchedulingAlgorithm {
 			for (Processor processor : processors) {
 				if (processor.isFree()) {
 					log.debug("processor is free " + processor);
-					Task nextTask = processor.getNextTask(ended, heightAlgorithm);
+					Task nextTask =
+							processor.getNextTask(ended,
+									heightAlgorithmFactory.create(modulesGraph, processorsGraph, processorsPartial));
 					if (nextTask != null) {
 						log.debug("EXEC time=" + time + " task=" + nextTask.getId() + " on processor="
 								+ processor.getId());

@@ -212,6 +212,10 @@ public class ModulesGraph {
 		return result;
 	}
 
+	public int getTasksNumber() {
+		return taskCosts.length;
+	}
+
 	@Override
 	public String toString() {
 		return "ModulesGraph [name=" + name + ", taskCosts=" + Arrays.toString(taskCosts) + ", taskChildrenWeight="

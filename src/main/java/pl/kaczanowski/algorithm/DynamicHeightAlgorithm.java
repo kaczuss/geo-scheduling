@@ -17,6 +17,14 @@ import com.google.common.collect.Sets;
 
 public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
+	public static class Factory {
+
+		public DynamicHeightAlgorithm create(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
+				final Map<Integer, Set<Integer>> processorDevision) {
+			return new DynamicHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
+		}
+	}
+
 	private final Logger log = LoggerFactory.getLogger(DynamicHeightAlgorithm.class);
 
 	private final ModulesGraph modulesGraph;
@@ -25,7 +33,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
 	private final Map<Integer, Integer> taskToProcessor;
 
-	public DynamicHeightAlgorithm(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
+	private DynamicHeightAlgorithm(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
 			final Map<Integer, Set<Integer>> processorDevision) {
 		this.modulesGraph = modulesGraph;
 		this.processorsGraph = processorsGraph;
@@ -33,19 +41,8 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
 	}
 
-	private Map<Integer, Integer> getDevisionMap(final Map<Integer, Set<Integer>> processorDevision) {
-		Map<Integer, Integer> result = Maps.newTreeMap();
-
-		for (Entry<Integer, Set<Integer>> entry : processorDevision.entrySet()) {
-			for (Integer taskId : entry.getValue()) {
-				result.put(taskId, entry.getKey());
-			}
-		}
-
-		return result;
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see pl.kaczanowski.algorithm.HeightAlgorithm#getCost(java.lang.Integer)
 	 */
 	@Override
@@ -71,5 +68,17 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 		}
 
 		return weight + Ordering.natural().max(values);
+	}
+
+	private Map<Integer, Integer> getDevisionMap(final Map<Integer, Set<Integer>> processorDevision) {
+		Map<Integer, Integer> result = Maps.newTreeMap();
+
+		for (Entry<Integer, Set<Integer>> entry : processorDevision.entrySet()) {
+			for (Integer taskId : entry.getValue()) {
+				result.put(taskId, entry.getKey());
+			}
+		}
+
+		return result;
 	}
 }

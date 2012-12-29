@@ -41,11 +41,26 @@ import com.google.common.io.Files;
  */
 public class SchedulingGraphsDataProvider {
 
-	private static abstract class AbstracGraphFileDataIterator implements Iterator<Object[]> {
+	private static abstract class AbstractGraphFileDataIterator implements Iterator<Object[]> {
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
+		protected Integer[][] getGraphConnections(final List<String> connectionsMatrix) {
+
+			Integer[][] result = new Integer[connectionsMatrix.size()][connectionsMatrix.size()];
+
+			for (int i = 0; i < connectionsMatrix.size(); i++) {
+				result[i] = getIntegerArray(connectionsMatrix.get(i));
+			}
+
+			return result;
+		}
+
+		protected Integer[] getIntegerArray(final String integersLine) {
+			Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
+			return Iterables.toArray(iterable, Integer.class);
+		}
+
+		protected Set<Integer> getIntegerSet(final String integersLine) {
+			return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
 		}
 
 		protected ModulesGraph getModuleGraph(final String treeName) throws IOException {
@@ -70,16 +85,6 @@ public class SchedulingGraphsDataProvider {
 			return result;
 		}
 
-		protected Set<Integer> getIntegerSet(final String integersLine) {
-			return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
-		}
-
-		protected ArrayList<String> readFile(final File graphFile) throws IOException {
-			return Lists.newArrayList(Iterables.filter(Iterables.filter(
-					CharStreams.readLines(Files.newReaderSupplier(graphFile, Charsets.UTF_8)), isNotEmptyString()),
-					notStartsFrom('#')));
-		}
-
 		protected Integer[][] getProcessorsGraph(final List<String> processorsGraphMatrix) {
 
 			Integer[][] result = new Integer[processorsGraphMatrix.size()][processorsGraphMatrix.size()];
@@ -92,29 +97,68 @@ public class SchedulingGraphsDataProvider {
 			return result;
 		}
 
-		protected Integer[][] getGraphConnections(final List<String> connectionsMatrix) {
-
-			Integer[][] result = new Integer[connectionsMatrix.size()][connectionsMatrix.size()];
-
-			for (int i = 0; i < connectionsMatrix.size(); i++) {
-				result[i] = getIntegerArray(connectionsMatrix.get(i));
-			}
-
-			return result;
-		}
-
-		protected Integer[] getIntegerArray(final String integersLine) {
-			Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
-			return Iterables.toArray(iterable, Integer.class);
-		}
-
 		protected String getTreeGraphName(final File file) {
 			return file.getName().subSequence(0, file.getName().indexOf('_')).toString();
 		}
 
+		protected ArrayList<String> readFile(final File graphFile) throws IOException {
+			return Lists.newArrayList(Iterables.filter(Iterables.filter(
+					CharStreams.readLines(Files.newReaderSupplier(graphFile, Charsets.UTF_8)), isNotEmptyString()),
+					notStartsFrom('#')));
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
-	private static class SchedulingGraphFileIterator extends AbstracGraphFileDataIterator {
+	private static class GeoGraphFileIterator extends AbstractGraphFileDataIterator implements Iterator<Object[]> {
+
+		private List<File> files;
+
+		private int actualFile;
+
+		public GeoGraphFileIterator(final Collection<File> listFiles) {
+			this.files = Lists.newArrayList(listFiles);
+			actualFile = 0;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return actualFile < files.size();
+		}
+
+		@Override
+		public Object[] next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+
+			try {
+				File processorsFile = files.get(actualFile);
+
+				// first line - tasks cost
+				Object[] result = new Object[2];
+				String treeName = getTreeGraphName(processorsFile);
+
+				result[0] = getModuleGraph(treeName);
+
+				List<String> processorsLines = readFile(processorsFile);
+
+				result[1] = new ProcessorsGraph(getProcessorsGraph(processorsLines));
+				actualFile++;
+
+				return result;
+			} catch (IOException e) {
+				throw Throwables.propagate(e);
+			}
+		}
+
+	}
+
+	private static class SchedulingGraphFileIterator extends AbstractGraphFileDataIterator {
 
 		private static final Logger LOG = LoggerFactory
 				.getLogger(SchedulingGraphsDataProvider.SchedulingGraphFileIterator.class);
@@ -175,7 +219,7 @@ public class SchedulingGraphsDataProvider {
 
 	}
 
-	private static class SchedulingPolicyGraphFileIterator extends AbstracGraphFileDataIterator {
+	private static class SchedulingPolicyGraphFileIterator extends AbstractGraphFileDataIterator {
 
 		private static final Logger LOG = LoggerFactory
 				.getLogger(SchedulingGraphsDataProvider.SchedulingPolicyGraphFileIterator.class);
@@ -239,11 +283,12 @@ public class SchedulingGraphsDataProvider {
 	}
 
 	@DataProvider
-	public static Iterator<Object[]> getSchedulingPolicyData() {
+	public static Iterator<Object[]> getGeoData() {
+
 		Collection<File> listFiles =
-				FileUtils.listFiles(new File("src/test/resources/graphs/schedulingPolicy"),
+				FileUtils.listFiles(new File("src/test/resources/graphs/geoProcessors"),
 						FileFilterUtils.fileFileFilter(), null);
-		return new SchedulingPolicyGraphFileIterator(listFiles);
+		return new GeoGraphFileIterator(listFiles);
 
 	}
 
@@ -256,4 +301,14 @@ public class SchedulingGraphsDataProvider {
 		return new SchedulingGraphFileIterator(listFiles);
 
 	}
+
+	@DataProvider
+	public static Iterator<Object[]> getSchedulingPolicyData() {
+		Collection<File> listFiles =
+				FileUtils.listFiles(new File("src/test/resources/graphs/schedulingPolicy"),
+						FileFilterUtils.fileFileFilter(), null);
+		return new SchedulingPolicyGraphFileIterator(listFiles);
+
+	}
+
 }

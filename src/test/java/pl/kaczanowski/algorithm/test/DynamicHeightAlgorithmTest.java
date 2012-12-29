@@ -20,7 +20,8 @@ public class DynamicHeightAlgorithmTest {
 			final ProcessorsGraph processorsGraph, final Map<Integer, Set<Integer>> processorDevision,
 			final Integer startModule, final Integer expectedCost) {
 
-		HeightAlgorithm sut = new DynamicHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
+		HeightAlgorithm sut =
+				new DynamicHeightAlgorithm.Factory().create(modulesGraph, processorsGraph, processorDevision);
 
 		int cost = sut.getCost(startModule);
 
