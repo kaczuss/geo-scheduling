@@ -64,8 +64,8 @@ public class SchedulingAlgorithm {
 		Map<Integer, Set<Task>> tasksPartial = getTasksPartial(processorsPartial, tasks);
 		List<Processor> processors = processorsGraph.getProcessorCopies(tasksPartial);
 
-		while (Iterables.any(tasks, Task.IS_TASK_NOT_ENDED)) {
-			Collection<Task> ended = Collections2.filter(tasks, Task.IS_TASK_ENDED);
+		while (Iterables.any(tasks, Task.isNotEndedFn())) {
+			Collection<Task> ended = Collections2.filter(tasks, Task.isEndedFn());
 			for (Processor processor : processors) {
 				if (processor.isFree()) {
 					// log.debug("processor is free " + processor);

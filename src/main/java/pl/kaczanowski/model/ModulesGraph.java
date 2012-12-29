@@ -25,15 +25,28 @@ public class ModulesGraph {
 
 	public static class Task implements Comparable<Task> {
 
-		public static final Predicate<? super Task> IS_TASK_NOT_ENDED = new Predicate<Task>() {
+		private static final Predicate<? super Task> IS_TASK_NOT_ENDED = new Predicate<Task>() {
 			@Override
 			public boolean apply(@Nullable final Task input) {
 				return input != null && !input.isEnded();
 			}
 		};
 
-		// TODO do metod
-		public static final Predicate<? super Task> IS_TASK_ENDED = Predicates.not(IS_TASK_NOT_ENDED);
+		private static final Predicate<? super Task> IS_TASK_ENDED = Predicates.not(IS_TASK_NOT_ENDED);
+
+		/**
+		 * @return function that tells is task ended
+		 */
+		public static Predicate<? super Task> isEndedFn() {
+			return IS_TASK_ENDED;
+		}
+
+		/**
+		 * @return function that return true when task is not ended
+		 */
+		public static Predicate<? super Task> isNotEndedFn() {
+			return IS_TASK_NOT_ENDED;
+		}
 
 		private final int id;
 
