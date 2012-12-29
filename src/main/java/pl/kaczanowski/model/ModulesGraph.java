@@ -21,8 +21,17 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
+/**
+ * Represents graph with tasks.
+ * Contains information about all connections.
+ * @author kaczanowskip
+ */
 public class ModulesGraph {
 
+	/**
+	 * Task on graph.
+	 * @author kaczanowskip
+	 */
 	public static class Task implements Comparable<Task> {
 
 		private static final Predicate<? super Task> IS_TASK_NOT_ENDED = new Predicate<Task>() {
@@ -66,6 +75,9 @@ public class ModulesGraph {
 			return ComparisonChain.start().compare(id, o.id).compare(cost, o.cost).result();
 		}
 
+		/**
+		 * Ends task.
+		 */
 		public void end() {
 			this.ended = true;
 		}
@@ -95,14 +107,23 @@ public class ModulesGraph {
 			return true;
 		}
 
+		/**
+		 * @return task cost
+		 */
 		public Integer getCost() {
 			return cost;
 		}
 
+		/**
+		 * @return task id
+		 */
 		public int getId() {
 			return id;
 		}
 
+		/**
+		 * @return parent tasks
+		 */
 		public Collection<Task> getParentTasks() {
 			return parentTasks;
 		}
@@ -116,6 +137,9 @@ public class ModulesGraph {
 			return result;
 		}
 
+		/**
+		 * @return true if task was end
+		 */
 		public boolean isEnded() {
 			return ended;
 		}
@@ -206,7 +230,10 @@ public class ModulesGraph {
 		return result;
 	}
 
-	public List<Task> getTasksCopy() {
+	/**
+	 * @return tasks copy
+	 */
+	public List<Task> getTasks() {
 
 		List<Task> result = Lists.newArrayListWithCapacity(taskCosts.length);
 

@@ -42,7 +42,6 @@ public class SchedulingAlgorithm {
 
 	}
 
-	// private final Logger log = LoggerFactory.getLogger(SchedulingAlgorithm.class);
 	private final DynamicHeightAlgorithm.Factory heightAlgorithmFactory;
 	private final ModulesGraph modulesGraph;
 
@@ -59,7 +58,7 @@ public class SchedulingAlgorithm {
 
 		int time = 0;
 
-		List<Task> tasks = modulesGraph.getTasksCopy();
+		List<Task> tasks = modulesGraph.getTasks();
 
 		Map<Integer, Set<Task>> tasksPartial = getTasksPartial(processorsPartial, tasks);
 		List<Processor> processors = processorsGraph.getProcessorCopies(tasksPartial);
@@ -68,13 +67,10 @@ public class SchedulingAlgorithm {
 			Collection<Task> ended = Collections2.filter(tasks, Task.isEndedFn());
 			for (Processor processor : processors) {
 				if (processor.isFree()) {
-					// log.debug("processor is free " + processor);
 					Task nextTask =
 							processor.getNextTask(ended,
 									heightAlgorithmFactory.create(modulesGraph, processorsGraph, processorsPartial));
 					if (nextTask != null) {
-						// log.debug("EXEC time=" + time + " task=" + nextTask.getId() + " on processor="
-						// + processor.getId());
 						processor.executeNext(nextTask, processorsGraph, tasksPartial, modulesGraph);
 					}
 				}
@@ -84,7 +80,6 @@ public class SchedulingAlgorithm {
 			}
 
 			++time;
-			// log.debug("tick= " + time);
 		}
 		return time;
 
