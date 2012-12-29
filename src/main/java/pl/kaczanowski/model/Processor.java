@@ -11,9 +11,6 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pl.kaczanowski.algorithm.HeightAlgorithm;
 import pl.kaczanowski.model.ModulesGraph.Task;
 
@@ -43,7 +40,7 @@ public class Processor {
 
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(Processor.class);
+	// private static final Logger LOG = LoggerFactory.getLogger(Processor.class);
 
 	private final int id;
 
@@ -162,9 +159,9 @@ public class Processor {
 	}
 
 	public void tick() {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("tick on processor " + this);
-		}
+		// if (LOG.isDebugEnabled()) {
+		// LOG.debug("tick on processor " + this);
+		// }
 		this.actualTime++;
 		if (isFree() && this.activeTask != null) {
 			this.activeTask.end();

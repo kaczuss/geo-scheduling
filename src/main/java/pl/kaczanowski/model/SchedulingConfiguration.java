@@ -68,6 +68,27 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 		return executionTime - o.executionTime;
 	}
 
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SchedulingConfiguration other = (SchedulingConfiguration) obj;
+		if (bitesForProcessor != other.bitesForProcessor) {
+			return false;
+		}
+		if (!Arrays.equals(bits, other.bits)) {
+			return false;
+		}
+		return true;
+	}
+
 	public SchedulingConfiguration evaluate(final SchedulingAlgorithm schedulingAlgorithm) {
 
 		checkState(hasNextEvolution(), "Cannot evaluate more");
@@ -105,12 +126,30 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 		return partial;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + bitesForProcessor;
+		result = prime * result + Arrays.hashCode(bits);
+		return result;
+	}
+
 	public boolean hasNextEvolution() {
 		return evolutionBit < bits.length;
 	}
 
 	public void resetEvolution() {
 		evolutionBit = 0;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("SchedulingConfiguration [bits=").append(Arrays.toString(bits)).append(", bitesForProcessor=")
+				.append(bitesForProcessor).append(", evolutionBit=").append(evolutionBit).append(", executionTime=")
+				.append(executionTime).append("]");
+		return builder.toString();
 	}
 
 }

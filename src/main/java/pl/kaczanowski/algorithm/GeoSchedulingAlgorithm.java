@@ -8,6 +8,9 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.kaczanowski.algorithm.SchedulingAlgorithm.Factory;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
@@ -79,6 +82,8 @@ public class GeoSchedulingAlgorithm {
 
 	private final SchedulingAlgorithm.Factory schedulingAlgorithmFactory;
 
+	private final Logger log = LoggerFactory.getLogger(GeoSchedulingAlgorithm.class);
+
 	private GeoSchedulingAlgorithm(final Factory schedulingAlgorithmFactory) {
 		this.schedulingAlgorithmFactory = schedulingAlgorithmFactory;
 	}
@@ -111,6 +116,9 @@ public class GeoSchedulingAlgorithm {
 						processorsGraph.getProcessorsCount(), schedulingAlgorithm);
 
 		SchedulingConfiguration currentConfiguration = bestConfiguration;
+
+		log.debug("start configuration is " + currentConfiguration);
+
 		for (int i = 0; i < iterations; ++i) {
 
 			currentConfiguration.resetEvolution();
@@ -123,9 +131,12 @@ public class GeoSchedulingAlgorithm {
 
 			currentConfiguration = chooseNextConfiguration(configurations);
 
+			log.debug("current configuration is " + currentConfiguration);
+
 			if (currentConfiguration.getExecutionTime() < bestConfiguration.getExecutionTime()) {
 				bestConfiguration = currentConfiguration;
 			}
+
 		}
 
 		return bestConfiguration;

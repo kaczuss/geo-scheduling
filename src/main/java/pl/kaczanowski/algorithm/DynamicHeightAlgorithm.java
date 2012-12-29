@@ -4,9 +4,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 
@@ -25,7 +22,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 		}
 	}
 
-	private final Logger log = LoggerFactory.getLogger(DynamicHeightAlgorithm.class);
+	// private final Logger log = LoggerFactory.getLogger(DynamicHeightAlgorithm.class);
 
 	private final ModulesGraph modulesGraph;
 
@@ -53,7 +50,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 		if (childrenTasks.isEmpty()) {
 			return weight;
 		}
-		log.info("weight on taskId[" + taskId + "] = " + weight);
+		// log.info("weight on taskId[" + taskId + "] = " + weight);
 
 		Set<Integer> values = Sets.newTreeSet();
 
@@ -62,7 +59,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 					processorsGraph.getChangeCost(taskToProcessor.get(taskId), taskToProcessor.get(childTaskId))
 							* modulesGraph.getChangeTime(taskId, childTaskId);
 			changeWeight += getCost(childTaskId);
-			log.info("on child " + childTaskId + " weight= " + changeWeight);
+			// log.info("on child " + childTaskId + " weight= " + changeWeight);
 
 			values.add(changeWeight);
 		}
