@@ -22,14 +22,15 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
 /**
- * Represents graph with tasks.
- * Contains information about all connections.
+ * Represents graph with tasks. Contains information about all connections.
+ * 
  * @author kaczanowskip
  */
 public class ModulesGraph {
 
 	/**
 	 * Task on graph.
+	 * 
 	 * @author kaczanowskip
 	 */
 	public static class Task implements Comparable<Task> {
@@ -65,7 +66,7 @@ public class ModulesGraph {
 
 		private Collection<Task> parentTasks;
 
-		public Task(final int id, final Integer cost) {
+		protected Task(final int id, final Integer cost) {
 			this.id = id;
 			this.cost = cost;
 		}
