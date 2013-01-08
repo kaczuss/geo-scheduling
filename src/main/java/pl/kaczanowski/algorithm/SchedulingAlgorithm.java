@@ -69,7 +69,8 @@ public class SchedulingAlgorithm {
 				if (processor.isFree()) {
 					Task nextTask =
 							processor.getNextTask(ended,
-									heightAlgorithmFactory.create(modulesGraph, processorsGraph, processorsPartial));
+									heightAlgorithmFactory.create(modulesGraph, processorsGraph, processorsPartial),
+									processorsGraph, tasksPartial, modulesGraph);
 					if (nextTask != null) {
 						processor.executeNext(nextTask, processorsGraph, tasksPartial, modulesGraph);
 					}

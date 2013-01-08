@@ -11,6 +11,9 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.kaczanowski.algorithm.HeightAlgorithm;
 import pl.kaczanowski.model.ModulesGraph.Task;
 
@@ -18,6 +21,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 public class Processor {
@@ -39,6 +43,8 @@ public class Processor {
 		}
 
 	}
+
+	private final Logger log = LoggerFactory.getLogger(Processor.TaskRank.class);
 
 	// private static final Logger LOG = LoggerFactory.getLogger(Processor.class);
 
@@ -87,13 +93,16 @@ public class Processor {
 		int time = nextTask.getCost();
 
 		if (!Iterables.isEmpty(nextTask.getParentTasks())) {
+			TreeSet<Integer> waitingTime = Sets.newTreeSet();
 			for (Task parentTask : nextTask.getParentTasks()) {
-				time +=
-						processorsGraph.getChangeCost(getFromProcessorId(parentTask, tasksParial), id)
-								* modulesGraph.getChangeTime(parentTask.getId(), nextTask.getId());
+				waitingTime.add(getWaitingTime(nextTask, processorsGraph, tasksParial, modulesGraph, parentTask));
 			}
+			time += Math.max(0, Ordering.natural().max(waitingTime));
 		}
 		this.reservedTillTime = this.actualTime + time;
+
+		log.debug("task " + nextTask.getId() + " start running at " + this.actualTime + " on processor " + getId()
+				+ " from ticks: " + time);
 
 		this.activeTask = nextTask;
 
@@ -134,9 +143,22 @@ public class Processor {
 		return id;
 	}
 
-	public Task getNextTask(final Collection<Task> allEndedTasks, final HeightAlgorithm heightAlgorithm) {
+	public Task getNextTask(final Collection<Task> allEndedTasks, final HeightAlgorithm heightAlgorithm,
+			@Nonnull final ProcessorsGraph processorsGraph, final Map<Integer, Set<Task>> tasksPartial,
+			final ModulesGraph modulesGraph) {
 
 		List<Task> candidates = Lists.newArrayList();
+
+		for (Task task : tasksToExecute) {
+			if (!task.isEnded() && allEndedTasks.containsAll(task.getParentTasks())
+					&& !mustWait(task, processorsGraph, tasksPartial, modulesGraph)) {
+				candidates.add(task);
+			}
+		}
+		if (!candidates.isEmpty()) {
+			return getBestTask(candidates, heightAlgorithm);
+		}
+
 		for (Task task : tasksToExecute) {
 			if (!task.isEnded() && allEndedTasks.containsAll(task.getParentTasks())) {
 				candidates.add(task);
@@ -144,6 +166,17 @@ public class Processor {
 		}
 
 		return getBestTask(candidates, heightAlgorithm);
+	}
+
+	private int getWaitingTime(final Task nextTask, final ProcessorsGraph processorsGraph,
+			final Map<Integer, Set<Task>> tasksParial, final ModulesGraph modulesGraph, final Task parentTask) {
+		int changeTime =
+				processorsGraph.getChangeCost(getFromProcessorId(parentTask, tasksParial), id)
+						* modulesGraph.getChangeTime(parentTask.getId(), nextTask.getId());
+		// it's time that data can be send after tasks ends
+		int timeDifference = actualTime - parentTask.getEndTime();
+		int waitTimeToExecute = changeTime - timeDifference;
+		return waitTimeToExecute < 0 ? 0 : waitTimeToExecute;
 	}
 
 	@Override
@@ -158,13 +191,29 @@ public class Processor {
 		return reservedTillTime <= actualTime;
 	}
 
+	private boolean mustWait(final Task task, final ProcessorsGraph processorsGraph,
+			final Map<Integer, Set<Task>> tasksPartial, final ModulesGraph modulesGraph) {
+		// check if task don't must wait on change
+		if (Iterables.isEmpty(task.getParentTasks())) {
+			return false;
+		}
+		for (Task parentTask : task.getParentTasks()) {
+			int waitingTime = getWaitingTime(task, processorsGraph, tasksPartial, modulesGraph, parentTask);
+			if (waitingTime > 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public void tick() {
 		// if (LOG.isDebugEnabled()) {
 		// LOG.debug("tick on processor " + this);
 		// }
 		this.actualTime++;
 		if (isFree() && this.activeTask != null) {
-			this.activeTask.end();
+			this.activeTask.end(actualTime);
 			this.activeTask = null;
 		}
 	}

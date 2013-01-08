@@ -45,6 +45,33 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 	@Override
 	public int getCost(final Integer taskId) {
 
+		Set<Integer> parentsTasks = modulesGraph.getParents(taskId);
+
+		Set<Integer> changeWeight = Sets.newTreeSet();
+		changeWeight.add(0);
+		for (Integer parentTaskId : parentsTasks) {
+			changeWeight.add(processorsGraph.getChangeCost(taskToProcessor.get(parentTaskId),
+					taskToProcessor.get(taskId))
+					* modulesGraph.getChangeTime(parentTaskId, taskId));
+		}
+
+		return Ordering.natural().max(changeWeight) + getSimpleCost(taskId);
+	}
+
+	private Map<Integer, Integer> getDevisionMap(final Map<Integer, Set<Integer>> processorDevision) {
+		Map<Integer, Integer> result = Maps.newTreeMap();
+
+		for (Entry<Integer, Set<Integer>> entry : processorDevision.entrySet()) {
+			for (Integer taskId : entry.getValue()) {
+				result.put(taskId, entry.getKey());
+			}
+		}
+
+		return result;
+	}
+
+	private int getSimpleCost(final Integer taskId) {
+
 		int weight = modulesGraph.getCost(taskId);
 		Set<Integer> childrenTasks = modulesGraph.getChildren(taskId);
 		if (childrenTasks.isEmpty()) {
@@ -58,24 +85,12 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 			int changeWeight =
 					processorsGraph.getChangeCost(taskToProcessor.get(taskId), taskToProcessor.get(childTaskId))
 							* modulesGraph.getChangeTime(taskId, childTaskId);
-			changeWeight += getCost(childTaskId);
+			changeWeight += getSimpleCost(childTaskId);
 			// log.info("on child " + childTaskId + " weight= " + changeWeight);
 
 			values.add(changeWeight);
 		}
 
 		return weight + Ordering.natural().max(values);
-	}
-
-	private Map<Integer, Integer> getDevisionMap(final Map<Integer, Set<Integer>> processorDevision) {
-		Map<Integer, Integer> result = Maps.newTreeMap();
-
-		for (Entry<Integer, Set<Integer>> entry : processorDevision.entrySet()) {
-			for (Integer taskId : entry.getValue()) {
-				result.put(taskId, entry.getKey());
-			}
-		}
-
-		return result;
 	}
 }

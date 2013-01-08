@@ -16,6 +16,6 @@
 13
 
 #oczekiwany rezultat
-3
+4
 
 

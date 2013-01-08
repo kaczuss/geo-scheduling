@@ -13,5 +13,5 @@
 2;3;6;7;9;11;13;14
 
 #oczekiwany rezultat
-10
+9
 

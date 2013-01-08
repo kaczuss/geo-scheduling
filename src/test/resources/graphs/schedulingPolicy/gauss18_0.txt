@@ -16,6 +16,6 @@
 16
 
 #oczekiwany rezultat
-1
+9
 
 

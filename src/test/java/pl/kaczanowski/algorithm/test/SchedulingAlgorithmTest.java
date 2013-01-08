@@ -42,6 +42,7 @@ public class SchedulingAlgorithmTest {
 
 		int executionTime = sut.getExecutionTime(processorsPartial);
 
+		log.debug("done for " + modulesGraph.getName() + " execution time " + expectedExecutionTime);
 		assertThat(executionTime).isEqualTo(expectedExecutionTime);
 
 	}

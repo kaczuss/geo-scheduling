@@ -43,70 +43,6 @@ public class SchedulingGraphsDataProvider {
 
 	private static abstract class AbstractGraphFileDataIterator implements Iterator<Object[]> {
 
-		protected Integer[][] getGraphConnections(final List<String> connectionsMatrix) {
-
-			Integer[][] result = new Integer[connectionsMatrix.size()][connectionsMatrix.size()];
-
-			for (int i = 0; i < connectionsMatrix.size(); i++) {
-				result[i] = getIntegerArray(connectionsMatrix.get(i));
-			}
-
-			return result;
-		}
-
-		protected Integer[] getIntegerArray(final String integersLine) {
-			Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
-			return Iterables.toArray(iterable, Integer.class);
-		}
-
-		protected Set<Integer> getIntegerSet(final String integersLine) {
-			return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
-		}
-
-		protected ModulesGraph getModuleGraph(final String treeName) throws IOException {
-			File graphFile = new File("src/test/resources/graphs/" + treeName + ".txt");
-
-			List<String> graphLines = readFile(graphFile);
-
-			Integer[] taskCosts = getIntegerArray(graphLines.get(0));
-			ModulesGraph modulesGraph =
-					new ModulesGraph(treeName, taskCosts, getGraphConnections(graphLines.subList(1,
-							1 + taskCosts.length)));
-			return modulesGraph;
-		}
-
-		protected Map<Integer, Set<Integer>> getProcessDivision(final List<String> processorDevision) {
-			Map<Integer, Set<Integer>> result = Maps.newHashMapWithExpectedSize(processorDevision.size());
-
-			for (int i = 0; i < processorDevision.size(); i++) {
-				result.put(i, getIntegerSet(processorDevision.get(i)));
-			}
-
-			return result;
-		}
-
-		protected Integer[][] getProcessorsGraph(final List<String> processorsGraphMatrix) {
-
-			Integer[][] result = new Integer[processorsGraphMatrix.size()][processorsGraphMatrix.size()];
-
-			for (int i = 0; i < processorsGraphMatrix.size(); i++) {
-				result[i] = getIntegerArray(processorsGraphMatrix.get(i));
-
-			}
-
-			return result;
-		}
-
-		protected String getTreeGraphName(final File file) {
-			return file.getName().subSequence(0, file.getName().indexOf('_')).toString();
-		}
-
-		protected ArrayList<String> readFile(final File graphFile) throws IOException {
-			return Lists.newArrayList(Iterables.filter(Iterables.filter(
-					CharStreams.readLines(Files.newReaderSupplier(graphFile, Charsets.UTF_8)), isNotEmptyString()),
-					notStartsFrom('#')));
-		}
-
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
@@ -145,9 +81,7 @@ public class SchedulingGraphsDataProvider {
 
 				result[0] = getModuleGraph(treeName);
 
-				List<String> processorsLines = readFile(processorsFile);
-
-				result[1] = new ProcessorsGraph(getProcessorsGraph(processorsLines));
+				result[1] = getProcessorGraphFromFile(processorsFile);
 				actualFile++;
 
 				return result;
@@ -249,6 +183,8 @@ public class SchedulingGraphsDataProvider {
 			try {
 				File policyFile = schedulePolicyFiles.get(currentSchedulingPolicyFile);
 
+				LOG.debug("file " + policyFile.getName());
+
 				// first line - tasks cost
 				Object[] result = new Object[5];
 				String treeName = getTreeGraphName(policyFile);
@@ -292,6 +228,67 @@ public class SchedulingGraphsDataProvider {
 
 	}
 
+	protected static Integer[][] getGraphConnections(final List<String> connectionsMatrix) {
+
+		Integer[][] result = new Integer[connectionsMatrix.size()][connectionsMatrix.size()];
+
+		for (int i = 0; i < connectionsMatrix.size(); i++) {
+			result[i] = getIntegerArray(connectionsMatrix.get(i));
+		}
+
+		return result;
+	}
+
+	protected static Integer[] getIntegerArray(final String integersLine) {
+		Iterable<Integer> iterable = Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger());
+		return Iterables.toArray(iterable, Integer.class);
+	}
+
+	protected static Set<Integer> getIntegerSet(final String integersLine) {
+		return Sets.newTreeSet(Iterables.transform(Splitter.on(';').split(integersLine), stringToInteger()));
+	}
+
+	public static ModulesGraph getModuleGraph(final String treeName) throws IOException {
+		File graphFile = new File("src/test/resources/graphs/" + treeName + ".txt");
+
+		List<String> graphLines = readFile(graphFile);
+
+		Integer[] taskCosts = getIntegerArray(graphLines.get(0));
+		ModulesGraph modulesGraph =
+				new ModulesGraph(treeName, taskCosts,
+						getGraphConnections(graphLines.subList(1, 1 + taskCosts.length)));
+		return modulesGraph;
+	}
+
+	protected static Map<Integer, Set<Integer>> getProcessDivision(final List<String> processorDevision) {
+		Map<Integer, Set<Integer>> result = Maps.newHashMapWithExpectedSize(processorDevision.size());
+
+		for (int i = 0; i < processorDevision.size(); i++) {
+			result.put(i, getIntegerSet(processorDevision.get(i)));
+		}
+
+		return result;
+	}
+
+	public static ProcessorsGraph getProcessorGraphFromFile(final File processorsFile) throws IOException {
+		List<String> processorsLines = readFile(processorsFile);
+
+		ProcessorsGraph processorsGraph = new ProcessorsGraph(getProcessorsGraph(processorsLines));
+		return processorsGraph;
+	}
+
+	protected static Integer[][] getProcessorsGraph(final List<String> processorsGraphMatrix) {
+
+		Integer[][] result = new Integer[processorsGraphMatrix.size()][processorsGraphMatrix.size()];
+
+		for (int i = 0; i < processorsGraphMatrix.size(); i++) {
+			result[i] = getIntegerArray(processorsGraphMatrix.get(i));
+
+		}
+
+		return result;
+	}
+
 	@DataProvider
 	public static Iterator<Object[]> getSchedulingData() {
 
@@ -309,6 +306,16 @@ public class SchedulingGraphsDataProvider {
 						FileFilterUtils.fileFileFilter(), null);
 		return new SchedulingPolicyGraphFileIterator(listFiles);
 
+	}
+
+	protected static String getTreeGraphName(final File file) {
+		return file.getName().subSequence(0, file.getName().indexOf('_')).toString();
+	}
+
+	protected static ArrayList<String> readFile(final File graphFile) throws IOException {
+		return Lists.newArrayList(Iterables.filter(Iterables.filter(
+				CharStreams.readLines(Files.newReaderSupplier(graphFile, Charsets.UTF_8)), isNotEmptyString()),
+				notStartsFrom('#')));
 	}
 
 }

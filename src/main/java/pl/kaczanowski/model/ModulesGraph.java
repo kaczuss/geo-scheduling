@@ -23,14 +23,12 @@ import com.google.common.collect.TreeBasedTable;
 
 /**
  * Represents graph with tasks. Contains information about all connections.
- * 
  * @author kaczanowskip
  */
 public class ModulesGraph {
 
 	/**
 	 * Task on graph.
-	 * 
 	 * @author kaczanowskip
 	 */
 	public static class Task implements Comparable<Task> {
@@ -66,6 +64,8 @@ public class ModulesGraph {
 
 		private Collection<Task> parentTasks;
 
+		private Integer endTime;
+
 		protected Task(final int id, final Integer cost) {
 			this.id = id;
 			this.cost = cost;
@@ -76,10 +76,8 @@ public class ModulesGraph {
 			return ComparisonChain.start().compare(id, o.id).compare(cost, o.cost).result();
 		}
 
-		/**
-		 * Ends task.
-		 */
-		public void end() {
+		public void end(final int endTime) {
+			this.endTime = endTime;
 			this.ended = true;
 		}
 
@@ -113,6 +111,10 @@ public class ModulesGraph {
 		 */
 		public Integer getCost() {
 			return cost;
+		}
+
+		public Integer getEndTime() {
+			return endTime;
 		}
 
 		/**
@@ -188,6 +190,10 @@ public class ModulesGraph {
 
 	public String getName() {
 		return name;
+	}
+
+	public Set<Integer> getParents(final Integer taskId) {
+		return previousTasks.get(taskId);
 	}
 
 	private Map<Integer, Set<Integer>> getPreviousTasks(final Integer[][] taskConnections) {

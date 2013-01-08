@@ -15,6 +15,6 @@
 15
 
 #oczekiwany rezultat
-3
+15
 
 
