@@ -21,7 +21,9 @@ import com.google.inject.Injector;
 @Test
 public class SchedulingConfigurationIntegrationTest {
 
-	public void shouldReturnValidExecutionTime() throws IOException {
+	// TODO refactoring, dataprovider
+
+	public void shouldReturnValidExecutionTimeOnGauss18Graph() throws IOException {
 		Injector injector = Guice.createInjector(new AlgorithmModule());
 
 		Factory scheduleFactory = injector.getInstance(SchedulingAlgorithm.Factory.class);
@@ -37,5 +39,23 @@ public class SchedulingConfigurationIntegrationTest {
 						scheduleFactory.create(modulesGraph, processorsGraph));
 
 		assertThat(sut.getExecutionTime()).isEqualTo(44);
+	}
+
+	public void shouldReturnValidExecutionTimeOnSimpleGraph() throws IOException {
+		Injector injector = Guice.createInjector(new AlgorithmModule());
+
+		Factory scheduleFactory = injector.getInstance(SchedulingAlgorithm.Factory.class);
+
+		ModulesGraph modulesGraph = SchedulingGraphsDataProvider.getModuleGraph("simple");
+
+		ProcessorsGraph processorsGraph =
+				SchedulingGraphsDataProvider.getProcessorGraphFromFile(new File(
+						"src/test/resources/graphs/geoProcessors/simple_0.txt"));
+
+		SchedulingConfiguration sut =
+				SchedulingConfiguration.create(new byte[]{0, 0, 1, 1, 1}, 1,
+						scheduleFactory.create(modulesGraph, processorsGraph));
+
+		assertThat(sut.getExecutionTime()).isEqualTo(103);
 	}
 }

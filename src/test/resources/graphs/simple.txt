@@ -1,0 +1,9 @@
+#koszt poszczgolnego procesu
+1;1;1;1;1
+
+#macierz procesow - jesli zależa to wartość = wadze krawędzi
+;1;100;;
+;;;1;
+;;;;1
+;;;;1
+;;;;

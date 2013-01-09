@@ -155,17 +155,8 @@ public class Processor {
 				candidates.add(task);
 			}
 		}
-		if (!candidates.isEmpty()) {
-			return getBestTask(candidates, heightAlgorithm);
-		}
-
-		for (Task task : tasksToExecute) {
-			if (!task.isEnded() && allEndedTasks.containsAll(task.getParentTasks())) {
-				candidates.add(task);
-			}
-		}
-
 		return getBestTask(candidates, heightAlgorithm);
+
 	}
 
 	private int getWaitingTime(final Task nextTask, final ProcessorsGraph processorsGraph,

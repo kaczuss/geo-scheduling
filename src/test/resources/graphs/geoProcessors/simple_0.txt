@@ -1,0 +1,4 @@
+#macierz procesorów
+;1
+1;
+
