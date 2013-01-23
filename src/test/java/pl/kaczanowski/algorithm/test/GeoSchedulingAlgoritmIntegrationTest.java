@@ -8,19 +8,23 @@ import org.testng.annotations.Test;
 
 import pl.kaczanowski.algorithm.AlgorithmModule;
 import pl.kaczanowski.algorithm.GeoSchedulingAlgorithm;
-import pl.kaczanowski.algorithm.SchedulingAlgorithm;
 import pl.kaczanowski.algorithm.SchedulingAlgorithm.Factory;
+import pl.kaczanowski.algorithm.listner.AlgorithmStepsListener;
 import pl.kaczanowski.graph.dataproviders.SchedulingGraphsDataProvider;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 import pl.kaczanowski.model.SchedulingConfiguration;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.google.inject.Inject;
 
+@org.testng.annotations.Guice(modules = AlgorithmModule.class)
 public class GeoSchedulingAlgoritmIntegrationTest {
 
 	private final Logger log = LoggerFactory.getLogger(GeoSchedulingAlgoritmIntegrationTest.class);
+	@Inject
+	private Factory scheduleFactory;
+	@Inject
+	private AlgorithmStepsListener algorithmStepsListener;
 
 	/**
 	 * Problem with this method is that function return random results.
@@ -30,13 +34,10 @@ public class GeoSchedulingAlgoritmIntegrationTest {
 
 		log.debug("check data scheduling for " + modulesGraph);
 
-		Injector injector = Guice.createInjector(new AlgorithmModule());
-
-		Factory scheduleFactory = injector.getInstance(SchedulingAlgorithm.Factory.class);
-
 		GeoSchedulingAlgorithm sut =
-				new GeoSchedulingAlgorithm.Builder(scheduleFactory).setModulesGraph(modulesGraph)
-						.setProcessorsGraph(processorsGraph).setProbabilityParameter(0.8).setIterations(20).build();
+				new GeoSchedulingAlgorithm.Builder(scheduleFactory, algorithmStepsListener)
+						.setModulesGraph(modulesGraph).setProcessorsGraph(processorsGraph)
+						.setProbabilityParameter(0.8).setIterations(20).build();
 
 		SchedulingConfiguration configuration = sut.execute();
 

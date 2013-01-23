@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.kaczanowski.algorithm.SchedulingAlgorithm.Factory;
+import pl.kaczanowski.algorithm.listner.AlgorithmStepsListener;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 import pl.kaczanowski.model.SchedulingConfiguration;
@@ -31,12 +32,14 @@ public class GeoSchedulingAlgorithm {
 		private ProcessorsGraph processorsGraph;
 		private double probabilityParamter;
 		private int iterations;
+		private AlgorithmStepsListener stepsListener;
 
 		private final Factory schedulingAlgorithmFactory;
 
 		@Inject
-		public Builder(@Nonnull final Factory scheduleFactory) {
+		public Builder(@Nonnull final Factory scheduleFactory, final AlgorithmStepsListener listener) {
 			this.schedulingAlgorithmFactory = scheduleFactory;
+			this.stepsListener = listener;
 		}
 
 		public GeoSchedulingAlgorithm build() {
@@ -45,7 +48,7 @@ public class GeoSchedulingAlgorithm {
 			checkArgument(iterations > 0, "iterations must be positive value");
 			checkArgument(probabilityParamter > 0, "parameter must be positive value");
 
-			GeoSchedulingAlgorithm ret = new GeoSchedulingAlgorithm(schedulingAlgorithmFactory);
+			GeoSchedulingAlgorithm ret = new GeoSchedulingAlgorithm(schedulingAlgorithmFactory, stepsListener);
 			ret.modulesGraph = modulesGraph;
 			ret.processorsGraph = processorsGraph;
 			ret.iterations = iterations;
@@ -83,9 +86,12 @@ public class GeoSchedulingAlgorithm {
 	private final SchedulingAlgorithm.Factory schedulingAlgorithmFactory;
 
 	private final Logger log = LoggerFactory.getLogger(GeoSchedulingAlgorithm.class);
+	private final AlgorithmStepsListener algorithmStepsListener;
 
-	private GeoSchedulingAlgorithm(final Factory schedulingAlgorithmFactory) {
+	private GeoSchedulingAlgorithm(final Factory schedulingAlgorithmFactory,
+			final AlgorithmStepsListener stepsListener) {
 		this.schedulingAlgorithmFactory = schedulingAlgorithmFactory;
+		this.algorithmStepsListener = stepsListener;
 	}
 
 	private SchedulingConfiguration chooseNextConfiguration(final TreeSet<SchedulingConfiguration> configurations) {
@@ -119,6 +125,8 @@ public class GeoSchedulingAlgorithm {
 
 		log.debug("start configuration is " + currentConfiguration);
 
+		algorithmStepsListener.addCurrentConfiguration(currentConfiguration);
+		algorithmStepsListener.addBestConfiguration(bestConfiguration);
 		for (int i = 0; i < iterations; ++i) {
 
 			currentConfiguration.resetEvolution();
@@ -129,13 +137,19 @@ public class GeoSchedulingAlgorithm {
 				configurations.add(currentConfiguration.evaluate(schedulingAlgorithm));
 			}
 
+			algorithmStepsListener.addStepConfigurations(configurations);
+
 			currentConfiguration = chooseNextConfiguration(configurations);
+
+			algorithmStepsListener.addCurrentConfiguration(currentConfiguration);
 
 			log.debug("current configuration is " + currentConfiguration);
 
 			if (currentConfiguration.getExecutionTime() < bestConfiguration.getExecutionTime()) {
 				bestConfiguration = currentConfiguration;
 			}
+
+			algorithmStepsListener.addBestConfiguration(bestConfiguration);
 
 		}
 
