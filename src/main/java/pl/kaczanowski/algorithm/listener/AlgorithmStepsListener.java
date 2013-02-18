@@ -1,4 +1,4 @@
-package pl.kaczanowski.algorithm.listner;
+package pl.kaczanowski.algorithm.listener;
 
 import java.util.TreeSet;
 

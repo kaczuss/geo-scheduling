@@ -24,7 +24,7 @@ public class SchedulingConfigurationIntegrationTest {
 	// TODO refactoring, dataprovider
 
 	public void shouldReturnValidExecutionTimeOnGauss18Graph() throws IOException {
-		Injector injector = Guice.createInjector(new AlgorithmModule());
+		Injector injector = Guice.createInjector(new AlgorithmModule(null));
 
 		Factory scheduleFactory = injector.getInstance(SchedulingAlgorithm.Factory.class);
 
@@ -42,7 +42,7 @@ public class SchedulingConfigurationIntegrationTest {
 	}
 
 	public void shouldReturnValidExecutionTimeOnSimpleGraph() throws IOException {
-		Injector injector = Guice.createInjector(new AlgorithmModule());
+		Injector injector = Guice.createInjector(new AlgorithmModule(null));
 
 		Factory scheduleFactory = injector.getInstance(SchedulingAlgorithm.Factory.class);
 

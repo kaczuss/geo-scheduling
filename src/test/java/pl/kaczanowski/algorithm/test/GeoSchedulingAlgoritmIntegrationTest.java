@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import pl.kaczanowski.algorithm.AlgorithmModule;
 import pl.kaczanowski.algorithm.GeoSchedulingAlgorithm;
 import pl.kaczanowski.algorithm.SchedulingAlgorithm.Factory;
-import pl.kaczanowski.algorithm.listner.AlgorithmStepsListener;
+import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
 import pl.kaczanowski.graph.dataproviders.SchedulingGraphsDataProvider;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;

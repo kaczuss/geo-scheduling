@@ -4,4 +4,4 @@
 /**
  * @author pawel
  */
-package pl.kaczanowski.algorithm.listner;
+package pl.kaczanowski.algorithm.runner;

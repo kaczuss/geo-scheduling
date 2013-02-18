@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.kaczanowski.algorithm.SchedulingAlgorithm.Factory;
-import pl.kaczanowski.algorithm.listner.AlgorithmStepsListener;
+import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 import pl.kaczanowski.model.SchedulingConfiguration;
