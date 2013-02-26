@@ -3,6 +3,7 @@ package pl.kaczanowski.algorithm.runner;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -106,7 +107,7 @@ public class ConfigurationReader {
 		this.dataReader = dataReader;
 	}
 
-	public Configuration readConfiguration(final String[] args) {
+	public Configuration readConfiguration(final String[] args) throws IOException {
 
 		Map<Paramters, String> paramters = readParamters(args);
 

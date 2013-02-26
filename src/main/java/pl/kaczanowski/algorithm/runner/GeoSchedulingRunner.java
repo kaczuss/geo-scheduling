@@ -1,5 +1,6 @@
 package pl.kaczanowski.algorithm.runner;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 
 import pl.kaczanowski.algorithm.AlgorithmModule;
@@ -13,9 +14,15 @@ import com.google.inject.Injector;
 public class GeoSchedulingRunner {
 
 	/**
+	 * To run algorithm set properties. Properties are:
+	 * -f - file
+	 * -prob - probability
+	 * -i - algorithm iterations
+	 * -ri - run iterations
 	 * @param args
+	 * @throws IOException
 	 */
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws IOException {
 
 		Injector injector = Guice.createInjector(new AlgorithmModule(args));
 

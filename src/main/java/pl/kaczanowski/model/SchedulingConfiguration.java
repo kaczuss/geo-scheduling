@@ -7,21 +7,28 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.testng.collections.Maps;
-import org.testng.internal.annotations.Sets;
-
 import pl.kaczanowski.algorithm.SchedulingAlgorithm;
 import pl.kaczanowski.utils.MathUtils;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 /**
  * Configuration of scheduling.
- * 
  * @author kaczanowskip
  */
 public class SchedulingConfiguration implements Comparable<SchedulingConfiguration> {
 
-	public static SchedulingConfiguration createRandomConfiguration(final int tasksNumber, final int processorsNumber,
+	public static SchedulingConfiguration create(final byte[] bytes, final int bitsForProcessor,
 			final SchedulingAlgorithm schedulingAlgorithm) {
+
+		SchedulingConfiguration configuration = new SchedulingConfiguration(bytes, bitsForProcessor);
+		configuration.executionTime = schedulingAlgorithm.getExecutionTime(configuration.getProcessorsPartial());
+		return configuration;
+	}
+
+	public static SchedulingConfiguration createRandomConfiguration(final int tasksNumber,
+			final int processorsNumber, final SchedulingAlgorithm schedulingAlgorithm) {
 
 		int bitsForProcessor = getBitsForProcessor(processorsNumber);
 		int bitsCount = tasksNumber * bitsForProcessor;
@@ -36,14 +43,6 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 
 		return configuration;
 
-	}
-
-	public static SchedulingConfiguration create(final byte[] bytes, final int bitsForProcessor,
-			final SchedulingAlgorithm schedulingAlgorithm) {
-
-		SchedulingConfiguration configuration = new SchedulingConfiguration(bytes, bitsForProcessor);
-		configuration.executionTime = schedulingAlgorithm.getExecutionTime(configuration.getProcessorsPartial());
-		return configuration;
 	}
 
 	private static int getBitsForProcessor(final int processorsNumber) {
@@ -127,8 +126,8 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 		int tasks = bits.length / bitesForProcessor;
 		for (int task = 0; task < tasks; ++task) {
 
-			byte[] procByteArrayNumber = Arrays.copyOfRange(bits, task * bitesForProcessor, (task + 1)
-					* bitesForProcessor);
+			byte[] procByteArrayNumber =
+					Arrays.copyOfRange(bits, task * bitesForProcessor, (task + 1) * bitesForProcessor);
 			partial.get(MathUtils.getProcNumber(procByteArrayNumber)).add(task);
 		}
 

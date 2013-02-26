@@ -8,9 +8,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.testng.collections.Maps;
-import org.testng.internal.annotations.Sets;
-
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ModulesGraph.Task;
 import pl.kaczanowski.model.Processor;
@@ -18,6 +15,8 @@ import pl.kaczanowski.model.ProcessorsGraph;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
