@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import pl.kaczanowski.algorithm.SchedulingAlgorithm.Factory;
 import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
+import pl.kaczanowski.algorithm.listener.AlgorithmStepsListenerContainer;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 import pl.kaczanowski.model.SchedulingConfiguration;
@@ -37,9 +38,8 @@ public class GeoSchedulingAlgorithm {
 		private final Factory schedulingAlgorithmFactory;
 
 		@Inject
-		public Builder(@Nonnull final Factory scheduleFactory, final AlgorithmStepsListener listener) {
+		public Builder(@Nonnull final Factory scheduleFactory) {
 			this.schedulingAlgorithmFactory = scheduleFactory;
-			this.stepsListener = listener;
 		}
 
 		public GeoSchedulingAlgorithm build() {
@@ -76,6 +76,12 @@ public class GeoSchedulingAlgorithm {
 			this.processorsGraph = processorsGraph;
 			return this;
 		}
+
+		public Builder setStepsListener(final AlgorithmStepsListener stepsListener) {
+			this.stepsListener = stepsListener;
+			return this;
+		}
+
 	}
 
 	private ModulesGraph modulesGraph;
@@ -91,7 +97,8 @@ public class GeoSchedulingAlgorithm {
 	private GeoSchedulingAlgorithm(final Factory schedulingAlgorithmFactory,
 			final AlgorithmStepsListener stepsListener) {
 		this.schedulingAlgorithmFactory = schedulingAlgorithmFactory;
-		this.algorithmStepsListener = stepsListener;
+		this.algorithmStepsListener =
+				stepsListener == null ? new AlgorithmStepsListenerContainer(null) : stepsListener;
 	}
 
 	private SchedulingConfiguration chooseNextConfiguration(final TreeSet<SchedulingConfiguration> configurations) {
@@ -125,6 +132,8 @@ public class GeoSchedulingAlgorithm {
 
 		log.debug("start configuration is " + currentConfiguration);
 
+		algorithmStepsListener.startNewExecution();
+
 		algorithmStepsListener.addCurrentConfiguration(currentConfiguration);
 		algorithmStepsListener.addBestConfiguration(bestConfiguration);
 		for (int i = 0; i < iterations; ++i) {
@@ -152,6 +161,8 @@ public class GeoSchedulingAlgorithm {
 			algorithmStepsListener.addBestConfiguration(bestConfiguration);
 
 		}
+
+		algorithmStepsListener.endExecution();
 
 		return bestConfiguration;
 	}

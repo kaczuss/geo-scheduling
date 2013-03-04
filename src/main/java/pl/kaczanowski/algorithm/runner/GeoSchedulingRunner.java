@@ -35,7 +35,8 @@ public class GeoSchedulingRunner {
 					algorithmBuilder.setModulesGraph(configuration.getModulesGraph())
 							.setProcessorsGraph(configuration.getProcessorsGraph())
 							.setProbabilityParameter(configuration.getProbabilityParamter())
-							.setIterations(configuration.getAlgorithmIterations()).build();
+							.setIterations(configuration.getAlgorithmIterations())
+							.setStepsListener(configuration.getListener()).build();
 
 			SchedulingConfiguration scheduling = algorithm.execute();
 
@@ -43,7 +44,8 @@ public class GeoSchedulingRunner {
 					scheduling.toString()));
 
 		}
-		// TODO wypisanie danych listenerów
+
+		configuration.getListener().saveRaport();
 
 	}
 

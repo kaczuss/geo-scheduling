@@ -5,12 +5,20 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Map;
 
+import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
+import pl.kaczanowski.algorithm.listener.AlgorithmStepsListenerContainer;
+import pl.kaczanowski.algorithm.listener.BestIterationAchievementResultListener;
 import pl.kaczanowski.algorithm.runner.InputDataReader.InputData;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
 
+import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
@@ -28,6 +36,8 @@ public class ConfigurationReader {
 
 		private final int runIterations;
 
+		private final AlgorithmStepsListener listenerCollection;
+
 		/**
 		 * @param modulesGraph
 		 * @param processorsGraph
@@ -37,16 +47,23 @@ public class ConfigurationReader {
 		 * @param listenersClasses
 		 */
 		private Configuration(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
-				final double probabilityParamter, final int algorithmIterations, final int runIterations) {
+				final double probabilityParamter, final int algorithmIterations, final int runIterations,
+				final Collection<AlgorithmStepsListener> listeners) {
 			this.modulesGraph = modulesGraph;
 			this.processorsGraph = processorsGraph;
 			this.probabilityParamter = probabilityParamter;
 			this.algorithmIterations = algorithmIterations;
 			this.runIterations = runIterations;
+			this.listenerCollection = new AlgorithmStepsListenerContainer(listeners);
+
 		}
 
 		public int getAlgorithmIterations() {
 			return algorithmIterations;
+		}
+
+		public AlgorithmStepsListener getListener() {
+			return listenerCollection;
 		}
 
 		public ModulesGraph getModulesGraph() {
@@ -67,16 +84,17 @@ public class ConfigurationReader {
 
 	}
 
-	private enum Paramters {
+	private enum Parameters {
 
 		INPUT_FILE("-f"),
 		PROBABILITY("-prob"),
 		ALGORITHM_ITERATIONS("-i"),
-		RUN_ITERATIONS("-ri");
-		;
+		RUN_ITERATIONS("-ri"),
+		BEST_RESULT("-best"),
+		ACHIEVEMENT_REPORT_FILE("-achievement");
 
-		public static Paramters getByPrefix(final String key) {
-			for (Paramters param : values()) {
+		public static Parameters getByPrefix(final String key) {
+			for (Parameters param : values()) {
 				if (param.prefix.equals(key)) {
 					return param;
 				}
@@ -89,7 +107,7 @@ public class ConfigurationReader {
 		/**
 		 * @param prefix
 		 */
-		private Paramters(final String prefix) {
+		private Parameters(final String prefix) {
 			this.prefix = prefix;
 		}
 
@@ -107,34 +125,58 @@ public class ConfigurationReader {
 		this.dataReader = dataReader;
 	}
 
-	public Configuration readConfiguration(final String[] args) throws IOException {
+	private AlgorithmStepsListener getBestAchievementListener(final Map<Parameters, String> parameters) {
 
-		Map<Paramters, String> paramters = readParamters(args);
+		if (parameters.containsKey(Parameters.ACHIEVEMENT_REPORT_FILE)) {
+			String bestResult = parameters.get(Parameters.BEST_RESULT);
+			checkArgument(!Strings.isNullOrEmpty(bestResult), "If use achievement listener specify best result!");
 
-		checkArgument(paramters.containsKey(Paramters.INPUT_FILE), "Input file wasn't defined!");
+			Integer bestValue = Integer.valueOf(bestResult);
 
-		InputData inputData = dataReader.readData(new File(paramters.get(Paramters.INPUT_FILE)));
+			checkArgument(bestValue > 0, "Are you kidding?:)");
 
-		double probability =
-				paramters.containsKey(Paramters.PROBABILITY) ? Double.valueOf(paramters.get(Paramters.PROBABILITY))
-						: 0.8;
-		int algorithmIterations =
-				paramters.containsKey(Paramters.ALGORITHM_ITERATIONS) ? Integer.valueOf(paramters
-						.get(Paramters.ALGORITHM_ITERATIONS)) : 20;
-		int runIterations =
-				paramters.containsKey(Paramters.RUN_ITERATIONS) ? Integer.valueOf(paramters
-						.get(Paramters.RUN_ITERATIONS)) : 1;
-		return new Configuration(inputData.getModulesGraph(), inputData.getProcessorsGraph(), probability,
-				algorithmIterations, runIterations);
+			return new BestIterationAchievementResultListener(parameters.get(Parameters.ACHIEVEMENT_REPORT_FILE),
+					bestValue);
+
+		}
+
+		return null;
 	}
 
-	private Map<Paramters, String> readParamters(final String[] args) {
-		Map<Paramters, String> result = Maps.newHashMap();
+	public Configuration readConfiguration(final String[] args) throws IOException {
+
+		Map<Parameters, String> parameters = readParamters(args);
+
+		checkArgument(parameters.containsKey(Parameters.INPUT_FILE), "Input file wasn't defined!");
+
+		InputData inputData = dataReader.readData(new File(parameters.get(Parameters.INPUT_FILE)));
+
+		double probability =
+				parameters.containsKey(Parameters.PROBABILITY) ? Double.valueOf(parameters
+						.get(Parameters.PROBABILITY)) : 0.8;
+		int algorithmIterations =
+				parameters.containsKey(Parameters.ALGORITHM_ITERATIONS) ? Integer.valueOf(parameters
+						.get(Parameters.ALGORITHM_ITERATIONS)) : 20;
+		int runIterations =
+				parameters.containsKey(Parameters.RUN_ITERATIONS) ? Integer.valueOf(parameters
+						.get(Parameters.RUN_ITERATIONS)) : 1;
+
+		Collection<AlgorithmStepsListener> listeners = Lists.newArrayList();
+		listeners.add(getBestAchievementListener(parameters));
+
+		Iterables.removeIf(listeners, Predicates.isNull());
+
+		return new Configuration(inputData.getModulesGraph(), inputData.getProcessorsGraph(), probability,
+				algorithmIterations, runIterations, listeners);
+	}
+
+	private Map<Parameters, String> readParamters(final String[] args) {
+		Map<Parameters, String> result = Maps.newHashMap();
 
 		for (String param : args) {
 			String key = param.substring(0, param.indexOf(PARAM_VALUE_DELIMITER));
 
-			Paramters paramters = Paramters.getByPrefix(key);
+			Parameters paramters = Parameters.getByPrefix(key);
 
 			String value = param.substring(param.indexOf(PARAM_VALUE_DELIMITER) + 1);
 			result.put(paramters, value);
