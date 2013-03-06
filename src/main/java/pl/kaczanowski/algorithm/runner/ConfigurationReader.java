@@ -11,6 +11,7 @@ import java.util.Map;
 import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
 import pl.kaczanowski.algorithm.listener.AlgorithmStepsListenerContainer;
 import pl.kaczanowski.algorithm.listener.BestIterationAchievementResultListener;
+import pl.kaczanowski.algorithm.listener.IterationsToFoundBestResultListener;
 import pl.kaczanowski.algorithm.runner.InputDataReader.InputData;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
@@ -91,7 +92,8 @@ public class ConfigurationReader {
 		ALGORITHM_ITERATIONS("-i"),
 		RUN_ITERATIONS("-ri"),
 		BEST_RESULT("-best"),
-		ACHIEVEMENT_REPORT_FILE("-achievement");
+		ACHIEVEMENT_REPORT_FILE("-achievement"),
+		ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"), ;
 
 		public static Parameters getByPrefix(final String key) {
 			for (Parameters param : values()) {
@@ -143,6 +145,25 @@ public class ConfigurationReader {
 		return null;
 	}
 
+	private AlgorithmStepsListener getIterationsToBestListener(final Map<Parameters, String> parameters) {
+		if (parameters.containsKey(Parameters.ITERATIONS_TO_BEST_REPORT_FILE)) {
+			String bestResult = parameters.get(Parameters.BEST_RESULT);
+			checkArgument(!Strings.isNullOrEmpty(bestResult),
+					"If use iterations to best listener specify best result!");
+
+			Integer bestValue = Integer.valueOf(bestResult);
+
+			checkArgument(bestValue > 0, "Are you kidding?:)");
+
+			return new IterationsToFoundBestResultListener(parameters.get(Parameters.ITERATIONS_TO_BEST_REPORT_FILE),
+					bestValue);
+
+		}
+
+		return null;
+
+	}
+
 	public Configuration readConfiguration(final String[] args) throws IOException {
 
 		Map<Parameters, String> parameters = readParamters(args);
@@ -163,6 +184,7 @@ public class ConfigurationReader {
 
 		Collection<AlgorithmStepsListener> listeners = Lists.newArrayList();
 		listeners.add(getBestAchievementListener(parameters));
+		listeners.add(getIterationsToBestListener(parameters));
 
 		Iterables.removeIf(listeners, Predicates.isNull());
 

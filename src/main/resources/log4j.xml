@@ -9,11 +9,12 @@
 		</layout>
 	</appender>
 	
-	<appender name="testFile" class="org.apache.log4j.FileAppender">
-		<param name="File" value="test-output/test.log" />
-		<param name="Append" value="false" />
+	<appender name="testFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="c:/temp/mgr/test.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value=".yyyy-mm-dd"/>
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p %c{1} - %m%n" />
+			<param name="ConversionPattern" value="%d{HH:mm:ss:SSS} %-5p %c{1} - %m%n" />
 		</layout>
 	</appender>
 
