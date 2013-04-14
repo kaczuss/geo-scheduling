@@ -17,5 +17,8 @@ public class AlgorithmModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+
+		// bind(ConfigurationHelper.class).to(ConfigurationHelper.class);
+
 	}
 }

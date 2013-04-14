@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.TreeSet;
 
+import pl.kaczanowski.algorithm.helper.ConfigurationHelper;
 import pl.kaczanowski.model.SchedulingConfiguration;
 
 import com.google.common.base.Joiner;
@@ -26,11 +27,14 @@ public class BestMeanWorstIterationListener implements AlgorithmStepsListener {
 
 	private final String fileName;
 
+	private final ConfigurationHelper configurationHelper;
+
 	/**
 	 * @param fileName
 	 */
-	public BestMeanWorstIterationListener(final String fileName) {
+	public BestMeanWorstIterationListener(final String fileName, final ConfigurationHelper configurationHelper) {
 		this.fileName = fileName;
+		this.configurationHelper = configurationHelper;
 	}
 
 	@Override
@@ -55,16 +59,6 @@ public class BestMeanWorstIterationListener implements AlgorithmStepsListener {
 		currentIteration = -1;
 	}
 
-	private Integer getMean(final Collection<SchedulingConfiguration> executions) {
-
-		int sum = 0;
-		for (SchedulingConfiguration execution : executions) {
-			sum += execution.getExecutionTime();
-		}
-
-		return Math.round(sum / (float) executions.size());
-	}
-
 	@Override
 	public void saveRaport() throws IOException {
 		PrintWriter pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(fileName))));
@@ -75,8 +69,8 @@ public class BestMeanWorstIterationListener implements AlgorithmStepsListener {
 			// save best, mean, worst
 
 			pw.println(CSV_JOINER.join(iteration.getKey(), Iterables.getFirst(iteration.getValue(), null)
-					.getExecutionTime(), getMean(iteration.getValue()), Iterables.getLast(iteration.getValue(), null)
-					.getExecutionTime()));
+					.getExecutionTime(), configurationHelper.getMean(iteration.getValue()),
+					Iterables.getLast(iteration.getValue(), null).getExecutionTime()));
 		}
 
 		pw.flush();

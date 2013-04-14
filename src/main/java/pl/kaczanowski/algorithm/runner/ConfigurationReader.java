@@ -8,11 +8,13 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 
+import pl.kaczanowski.algorithm.helper.ConfigurationHelper;
 import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
 import pl.kaczanowski.algorithm.listener.AlgorithmStepsListenerContainer;
 import pl.kaczanowski.algorithm.listener.BestIterationAchievementResultListener;
-import pl.kaczanowski.algorithm.listener.IterationsToFoundBestResultListener;
 import pl.kaczanowski.algorithm.listener.BestMeanWorstIterationListener;
+import pl.kaczanowski.algorithm.listener.BestWorstInCurrentIterationListener;
+import pl.kaczanowski.algorithm.listener.IterationsToFoundBestResultListener;
 import pl.kaczanowski.algorithm.runner.InputDataReader.InputData;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
@@ -95,7 +97,8 @@ public class ConfigurationReader {
 		BEST_RESULT("-best"),
 		ACHIEVEMENT_REPORT_FILE("-achievement"),
 		ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"),
-		ITERATIONS_BEST_MEAN_WORST_REPORT_FILE("-bestMeanWorst");
+		ITERATIONS_BEST_MEAN_WORST_REPORT_FILE("-bestMeanWorst"),
+		BEST_WORST_CURRENT_REPORT_FILE("-currentBestWorst");
 
 		public static Parameters getByPrefix(final String key) {
 			for (Parameters param : values()) {
@@ -119,25 +122,17 @@ public class ConfigurationReader {
 
 	private final InputDataReader dataReader;
 
+	private final ConfigurationHelper configurationHelper;
+
 	private static final String PARAM_VALUE_DELIMITER = "=";
 
 	/**
 	 * @param dataReader
 	 */
 	@Inject
-	public ConfigurationReader(final InputDataReader dataReader) {
+	public ConfigurationReader(final InputDataReader dataReader, final ConfigurationHelper configurationHelper) {
 		this.dataReader = dataReader;
-	}
-
-	private AlgorithmStepsListener getBestMeanWorstListener(final Map<Parameters, String> parameters) {
-		if (parameters.containsKey(Parameters.ITERATIONS_BEST_MEAN_WORST_REPORT_FILE)) {
-
-			return new BestMeanWorstIterationListener(
-					parameters.get(Parameters.ITERATIONS_BEST_MEAN_WORST_REPORT_FILE));
-
-		}
-
-		return null;
+		this.configurationHelper = configurationHelper;
 	}
 
 	private AlgorithmStepsListener getBestAchievementListener(final Map<Parameters, String> parameters) {
@@ -156,6 +151,25 @@ public class ConfigurationReader {
 		}
 
 		return null;
+	}
+
+	private AlgorithmStepsListener getBestMeanWorstListener(final Map<Parameters, String> parameters) {
+		if (parameters.containsKey(Parameters.ITERATIONS_BEST_MEAN_WORST_REPORT_FILE)) {
+
+			return new BestMeanWorstIterationListener(
+					parameters.get(Parameters.ITERATIONS_BEST_MEAN_WORST_REPORT_FILE), configurationHelper);
+
+		}
+
+		return null;
+	}
+
+	private AlgorithmStepsListener getCurrentBestWorstListener(final Map<Parameters, String> parameters) {
+		String fileMask = parameters.get(Parameters.BEST_WORST_CURRENT_REPORT_FILE);
+		if (fileMask == null) {
+			return null;
+		}
+		return new BestWorstInCurrentIterationListener(fileMask, configurationHelper);
 	}
 
 	private AlgorithmStepsListener getIterationsToBestListener(final Map<Parameters, String> parameters) {
@@ -199,6 +213,7 @@ public class ConfigurationReader {
 		listeners.add(getBestAchievementListener(parameters));
 		listeners.add(getIterationsToBestListener(parameters));
 		listeners.add(getBestMeanWorstListener(parameters));
+		listeners.add(getCurrentBestWorstListener(parameters));
 
 		Iterables.removeIf(listeners, Predicates.isNull());
 
