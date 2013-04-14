@@ -12,6 +12,7 @@ import pl.kaczanowski.algorithm.listener.AlgorithmStepsListener;
 import pl.kaczanowski.algorithm.listener.AlgorithmStepsListenerContainer;
 import pl.kaczanowski.algorithm.listener.BestIterationAchievementResultListener;
 import pl.kaczanowski.algorithm.listener.IterationsToFoundBestResultListener;
+import pl.kaczanowski.algorithm.listener.BestMeanWorstIterationListener;
 import pl.kaczanowski.algorithm.runner.InputDataReader.InputData;
 import pl.kaczanowski.model.ModulesGraph;
 import pl.kaczanowski.model.ProcessorsGraph;
@@ -93,7 +94,8 @@ public class ConfigurationReader {
 		RUN_ITERATIONS("-ri"),
 		BEST_RESULT("-best"),
 		ACHIEVEMENT_REPORT_FILE("-achievement"),
-		ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"), ;
+		ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"),
+		ITERATIONS_BEST_MEAN_WORST_REPORT_FILE("-bestMeanWorst");
 
 		public static Parameters getByPrefix(final String key) {
 			for (Parameters param : values()) {
@@ -125,6 +127,17 @@ public class ConfigurationReader {
 	@Inject
 	public ConfigurationReader(final InputDataReader dataReader) {
 		this.dataReader = dataReader;
+	}
+
+	private AlgorithmStepsListener getBestMeanWorstListener(final Map<Parameters, String> parameters) {
+		if (parameters.containsKey(Parameters.ITERATIONS_BEST_MEAN_WORST_REPORT_FILE)) {
+
+			return new BestMeanWorstIterationListener(
+					parameters.get(Parameters.ITERATIONS_BEST_MEAN_WORST_REPORT_FILE));
+
+		}
+
+		return null;
 	}
 
 	private AlgorithmStepsListener getBestAchievementListener(final Map<Parameters, String> parameters) {
@@ -185,6 +198,7 @@ public class ConfigurationReader {
 		Collection<AlgorithmStepsListener> listeners = Lists.newArrayList();
 		listeners.add(getBestAchievementListener(parameters));
 		listeners.add(getIterationsToBestListener(parameters));
+		listeners.add(getBestMeanWorstListener(parameters));
 
 		Iterables.removeIf(listeners, Predicates.isNull());
 
