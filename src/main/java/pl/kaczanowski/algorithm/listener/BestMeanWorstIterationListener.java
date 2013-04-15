@@ -61,7 +61,10 @@ public class BestMeanWorstIterationListener implements AlgorithmStepsListener {
 
 	@Override
 	public void saveRaport() throws IOException {
+
 		PrintWriter pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(fileName))));
+
+		pw.println(CSV_JOINER.join("Numer iteracji", "Najlepszy", "Sredni", "Najgorszy"));
 
 		for (Entry<Integer, Collection<SchedulingConfiguration>> iteration : itertationConfigurations.asMap()
 				.entrySet()) {
