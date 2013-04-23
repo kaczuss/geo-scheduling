@@ -75,7 +75,8 @@ public class InputDataReader {
 
 	private Integer[] toIntegerArray(final String costs) {
 		return Iterables.toArray(
-				Iterables.transform(Splitter.on(';').split(costs), SimpleFunctions.stringToInteger()), Integer.class);
+				Iterables.transform(Splitter.on(';').trimResults().split(costs), SimpleFunctions.stringToInteger()),
+				Integer.class);
 	}
 
 	private Integer[][] toIntegerMatrix(final List<String> subList) {

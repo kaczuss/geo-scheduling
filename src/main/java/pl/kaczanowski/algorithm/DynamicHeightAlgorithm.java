@@ -93,4 +93,18 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
 		return weight + Ordering.natural().max(values);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("DynamicHeightAlgorithm [modulesGraph=");
+		builder.append(modulesGraph);
+		builder.append(", processorsGraph=");
+		builder.append(processorsGraph);
+		builder.append(", taskToProcessor=");
+		builder.append(taskToProcessor);
+		builder.append("]");
+		return builder.toString();
+	}
+
 }
