@@ -1,0 +1,1 @@
+-f=src/main/resources/gauss18.txt -iterToBest=C:/temp/raport/2013-04-15/iterations_to_best_gauss.csv -achievement=C:/temp/raport/2013-04-15/achievment_best_gauss.csv -best=44 -ri=100 -i=100

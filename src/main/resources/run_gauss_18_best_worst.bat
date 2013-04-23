@@ -1,0 +1,1 @@
+-f=src/main/resources/gauss18.txt -bestMeanWorst=c:/temp/raport/2013-04-15/iterations_best_gauss.csv -ri=100 -i=100 -currentBestWorst=c:/temp/raport/2013-04-15/gauss_best_worst_{0}.csv
