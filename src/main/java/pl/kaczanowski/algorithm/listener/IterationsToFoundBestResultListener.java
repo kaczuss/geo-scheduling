@@ -3,15 +3,13 @@ package pl.kaczanowski.algorithm.listener;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.TreeSet;
 
 import pl.kaczanowski.model.SchedulingConfiguration;
+import pl.kaczanowski.utils.FileCreateUtils;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -89,7 +87,7 @@ public class IterationsToFoundBestResultListener implements AlgorithmStepsListen
 
 	@Override
 	public void saveRaport() throws IOException {
-		PrintWriter pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(fileName))));
+		PrintWriter pw = FileCreateUtils.getPrintWriterWithPath(fileName);
 
 		for (int i = 0; i < executions.size(); i++) {
 			Execution execution = executions.get(i);
