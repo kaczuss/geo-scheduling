@@ -14,6 +14,7 @@ import pl.kaczanowski.algorithm.listener.AlgorithmStepsListenerContainer;
 import pl.kaczanowski.algorithm.listener.BestIterationAchievementResultListener;
 import pl.kaczanowski.algorithm.listener.BestMeanWorstIterationListener;
 import pl.kaczanowski.algorithm.listener.BestWorstInCurrentIterationListener;
+import pl.kaczanowski.algorithm.listener.DistributionNumberToBest;
 import pl.kaczanowski.algorithm.listener.IterationsToFoundBestResultListener;
 import pl.kaczanowski.algorithm.runner.InputDataReader.InputData;
 import pl.kaczanowski.model.ModulesGraph;
@@ -98,7 +99,8 @@ public class ConfigurationReader {
 		ACHIEVEMENT_REPORT_FILE("-achievement"),
 		ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"),
 		ITERATIONS_BEST_MEAN_WORST_REPORT_FILE("-bestMeanWorst"),
-		BEST_WORST_CURRENT_REPORT_FILE("-currentBestWorst");
+		BEST_WORST_CURRENT_REPORT_FILE("-currentBestWorst"),
+		DISTRIBUTION_REPORT_FILE("-distribution");
 
 		public static Parameters getByPrefix(final String key) {
 			for (Parameters param : values()) {
@@ -138,12 +140,7 @@ public class ConfigurationReader {
 	private AlgorithmStepsListener getBestAchievementListener(final Map<Parameters, String> parameters) {
 
 		if (parameters.containsKey(Parameters.ACHIEVEMENT_REPORT_FILE)) {
-			String bestResult = parameters.get(Parameters.BEST_RESULT);
-			checkArgument(!Strings.isNullOrEmpty(bestResult), "If use achievement listener specify best result!");
-
-			Integer bestValue = Integer.valueOf(bestResult);
-
-			checkArgument(bestValue > 0, "Are you kidding?:)");
+			Integer bestValue = getBestExecutionTimeParameter(parameters);
 
 			return new BestIterationAchievementResultListener(parameters.get(Parameters.ACHIEVEMENT_REPORT_FILE),
 					bestValue);
@@ -151,6 +148,16 @@ public class ConfigurationReader {
 		}
 
 		return null;
+	}
+
+	public Integer getBestExecutionTimeParameter(final Map<Parameters, String> parameters) {
+		String bestResult = parameters.get(Parameters.BEST_RESULT);
+		checkArgument(!Strings.isNullOrEmpty(bestResult), "If use achievement listener specify best result!");
+
+		Integer bestValue = Integer.valueOf(bestResult);
+
+		checkArgument(bestValue > 0, "Are you kidding?:)");
+		return bestValue;
 	}
 
 	private AlgorithmStepsListener getBestMeanWorstListener(final Map<Parameters, String> parameters) {
@@ -170,6 +177,17 @@ public class ConfigurationReader {
 			return null;
 		}
 		return new BestWorstInCurrentIterationListener(fileMask, configurationHelper);
+	}
+
+	private AlgorithmStepsListener getDistributionListener(final Map<Parameters, String> parameters,
+			final int algorithmIterations) {
+		String fileName = parameters.get(Parameters.DISTRIBUTION_REPORT_FILE);
+		if (fileName == null) {
+			return null;
+		}
+		Integer bestValue = getBestExecutionTimeParameter(parameters);
+
+		return new DistributionNumberToBest(fileName, bestValue, algorithmIterations);
 	}
 
 	private AlgorithmStepsListener getIterationsToBestListener(final Map<Parameters, String> parameters) {
@@ -214,6 +232,7 @@ public class ConfigurationReader {
 		listeners.add(getIterationsToBestListener(parameters));
 		listeners.add(getBestMeanWorstListener(parameters));
 		listeners.add(getCurrentBestWorstListener(parameters));
+		listeners.add(getDistributionListener(parameters, algorithmIterations));
 
 		Iterables.removeIf(listeners, Predicates.isNull());
 

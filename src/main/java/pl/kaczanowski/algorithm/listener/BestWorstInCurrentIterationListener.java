@@ -54,7 +54,7 @@ public class BestWorstInCurrentIterationListener implements AlgorithmStepsListen
 			if (best != o.best) {
 				return best - o.best;
 			}
-			return o.numberToGetBest = o.numberToGetBest;
+			return numberToGetBest - o.numberToGetBest;
 		}
 
 		@Override
