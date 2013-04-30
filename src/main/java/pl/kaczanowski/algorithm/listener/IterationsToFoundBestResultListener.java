@@ -25,7 +25,7 @@ public class IterationsToFoundBestResultListener implements AlgorithmStepsListen
 
 		SchedulingConfiguration best;
 
-		int iterations = 0;
+		int iterations = -1;
 
 		boolean foundBest = false;
 	}
@@ -56,6 +56,9 @@ public class IterationsToFoundBestResultListener implements AlgorithmStepsListen
 			actual.iterations++;
 			if (actual.best == null) {
 				actual.best = bestConfiguration;
+				if (actual.best.getExecutionTime() == bestTime) {
+					actual.foundBest = true;
+				}
 			} else if (bestConfiguration.getExecutionTime() < actual.best.getExecutionTime()) {
 				actual.best = bestConfiguration;
 				if (actual.best.getExecutionTime() == bestTime) {
@@ -88,7 +91,7 @@ public class IterationsToFoundBestResultListener implements AlgorithmStepsListen
 	public void saveRaport() throws IOException {
 		PrintWriter pw = FileCreateUtils.getPrintWriterWithPath(fileName);
 
-		pw.println(CSV_JOINER.join("Numer iteracji", "Wynik", "Liczba iteracji"));
+		pw.println(CSV_JOINER.join("Numer iteracji", "Liczba iteracji", "Wynik"));
 		for (int i = 0; i < executions.size(); i++) {
 			Execution execution = executions.get(i);
 			pw.println(CSV_JOINER.join(i, execution.iterations, execution.best.getExecutionTime()));
