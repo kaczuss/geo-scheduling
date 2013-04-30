@@ -2,7 +2,7 @@ package pl.kaczanowski.algorithm.listener;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.TreeSet;
+import java.util.List;
 
 import pl.kaczanowski.model.SchedulingConfiguration;
 import pl.kaczanowski.utils.FileCreateUtils;
@@ -55,7 +55,7 @@ public class DistributionNumberToBest implements AlgorithmStepsListener {
 	}
 
 	@Override
-	public void addStepConfigurations(final TreeSet<SchedulingConfiguration> configurations) {
+	public void addStepConfigurations(final List<SchedulingConfiguration> configurations) {
 		// do nothing
 	}
 

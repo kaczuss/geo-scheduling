@@ -2,7 +2,7 @@ package pl.kaczanowski.algorithm.listener;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.TreeSet;
+import java.util.List;
 
 import pl.kaczanowski.model.SchedulingConfiguration;
 
@@ -39,7 +39,7 @@ public class AlgorithmStepsListenerContainer implements AlgorithmStepsListener {
 	}
 
 	@Override
-	public void addStepConfigurations(final TreeSet<SchedulingConfiguration> configurations) {
+	public void addStepConfigurations(final List<SchedulingConfiguration> configurations) {
 		for (AlgorithmStepsListener listener : listeners) {
 			listener.addStepConfigurations(configurations);
 

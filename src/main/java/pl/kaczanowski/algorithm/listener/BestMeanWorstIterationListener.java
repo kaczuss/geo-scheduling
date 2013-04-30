@@ -3,8 +3,8 @@ package pl.kaczanowski.algorithm.listener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 
 import pl.kaczanowski.algorithm.helper.ConfigurationHelper;
 import pl.kaczanowski.model.SchedulingConfiguration;
@@ -48,7 +48,7 @@ public class BestMeanWorstIterationListener implements AlgorithmStepsListener {
 	}
 
 	@Override
-	public void addStepConfigurations(final TreeSet<SchedulingConfiguration> configurations) {
+	public void addStepConfigurations(final List<SchedulingConfiguration> configurations) {
 		// DO nothing
 	}
 

@@ -9,7 +9,6 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import pl.kaczanowski.algorithm.helper.ConfigurationHelper;
 import pl.kaczanowski.model.SchedulingConfiguration;
@@ -135,7 +134,7 @@ public class BestWorstInCurrentIterationListener implements AlgorithmStepsListen
 	}
 
 	@Override
-	public void addStepConfigurations(final TreeSet<SchedulingConfiguration> configurations) {
+	public void addStepConfigurations(final List<SchedulingConfiguration> configurations) {
 		currentIteration = new CurrentIterationData();
 		currentIteration.best = Iterables.getFirst(configurations, null).getExecutionTime();
 		currentIteration.worst = Iterables.getLast(configurations).getExecutionTime();

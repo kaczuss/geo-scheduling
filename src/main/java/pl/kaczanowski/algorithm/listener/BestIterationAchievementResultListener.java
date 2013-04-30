@@ -6,7 +6,6 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.TreeSet;
 
 import pl.kaczanowski.model.SchedulingConfiguration;
 import pl.kaczanowski.utils.FileCreateUtils;
@@ -59,7 +58,7 @@ public class BestIterationAchievementResultListener implements AlgorithmStepsLis
 	}
 
 	@Override
-	public void addStepConfigurations(final TreeSet<SchedulingConfiguration> configurations) {
+	public void addStepConfigurations(final List<SchedulingConfiguration> configurations) {
 		// ignore
 	}
 

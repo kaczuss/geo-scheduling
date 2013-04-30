@@ -3,8 +3,8 @@ package pl.kaczanowski.algorithm;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.List;
 import java.util.Random;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
@@ -19,7 +19,8 @@ import pl.kaczanowski.model.ProcessorsGraph;
 import pl.kaczanowski.model.SchedulingConfiguration;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
 
 /**
@@ -101,7 +102,7 @@ public class GeoSchedulingAlgorithm {
 				stepsListener == null ? new AlgorithmStepsListenerContainer(null) : stepsListener;
 	}
 
-	private SchedulingConfiguration chooseNextConfiguration(final TreeSet<SchedulingConfiguration> configurations) {
+	private SchedulingConfiguration chooseNextConfiguration(final List<SchedulingConfiguration> configurations) {
 		Random rand = new Random();
 
 		int toChange = rand.nextInt(configurations.size());
@@ -110,13 +111,12 @@ public class GeoSchedulingAlgorithm {
 
 		// FIXME is change to infinite loop?
 
-		double changeIntProb = 1 / Math.pow(toChange + 1, probabilityParamter);
+		double changeIntProb = Math.pow(1.0 / (toChange + 1), probabilityParamter);
 		while (changeIntProb < randProb) {
 			toChange = rand.nextInt(configurations.size());
-			changeIntProb = 1 / Math.pow(toChange + 1, probabilityParamter);
+			changeIntProb = Math.pow(1.0 / (toChange + 1), probabilityParamter);
 
 		}
-
 		return Iterables.get(configurations, toChange);
 	}
 
@@ -140,12 +140,13 @@ public class GeoSchedulingAlgorithm {
 
 			currentConfiguration.resetEvolution();
 
-			TreeSet<SchedulingConfiguration> configurations = Sets.newTreeSet();
+			List<SchedulingConfiguration> configurations = Lists.newArrayList();
 
 			while (currentConfiguration.hasNextEvolution()) {
 				configurations.add(currentConfiguration.evaluate(schedulingAlgorithm));
 			}
 
+			configurations = Ordering.natural().sortedCopy(configurations);
 			algorithmStepsListener.addStepConfigurations(configurations);
 
 			currentConfiguration = chooseNextConfiguration(configurations);

@@ -1,7 +1,7 @@
 package pl.kaczanowski.algorithm.listener;
 
 import java.io.IOException;
-import java.util.TreeSet;
+import java.util.List;
 
 import pl.kaczanowski.model.SchedulingConfiguration;
 
@@ -15,7 +15,7 @@ public interface AlgorithmStepsListener {
 
 	void addCurrentConfiguration(SchedulingConfiguration currentConfiguration);
 
-	void addStepConfigurations(TreeSet<SchedulingConfiguration> configurations);
+	void addStepConfigurations(List<SchedulingConfiguration> configurations);
 
 	void endExecution();
 
