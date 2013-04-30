@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,7 +23,6 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 public class ConfigurationReader {
@@ -89,52 +87,21 @@ public class ConfigurationReader {
 
 	}
 
-	private enum Parameters {
-
-		INPUT_FILE("-f"),
-		PROBABILITY("-prob"),
-		ALGORITHM_ITERATIONS("-i"),
-		RUN_ITERATIONS("-ri"),
-		BEST_RESULT("-best"),
-		ACHIEVEMENT_REPORT_FILE("-achievement"),
-		ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"),
-		ITERATIONS_BEST_MEAN_WORST_REPORT_FILE("-bestMeanWorst"),
-		BEST_WORST_CURRENT_REPORT_FILE("-currentBestWorst"),
-		DISTRIBUTION_REPORT_FILE("-distribution");
-
-		public static Parameters getByPrefix(final String key) {
-			for (Parameters param : values()) {
-				if (param.prefix.equals(key)) {
-					return param;
-				}
-			}
-			throw new IllegalArgumentException(MessageFormat.format("The paramter {0} isn''t defined!", key));
-		}
-
-		private final String prefix;
-
-		/**
-		 * @param prefix
-		 */
-		private Parameters(final String prefix) {
-			this.prefix = prefix;
-		}
-
-	}
-
 	private final InputDataReader dataReader;
 
 	private final ConfigurationHelper configurationHelper;
 
-	private static final String PARAM_VALUE_DELIMITER = "=";
+	private final ParameterUtils parameterUtils;
 
 	/**
 	 * @param dataReader
 	 */
 	@Inject
-	public ConfigurationReader(final InputDataReader dataReader, final ConfigurationHelper configurationHelper) {
+	public ConfigurationReader(final InputDataReader dataReader, final ConfigurationHelper configurationHelper,
+			final ParameterUtils parameterUtils) {
 		this.dataReader = dataReader;
 		this.configurationHelper = configurationHelper;
+		this.parameterUtils = parameterUtils;
 	}
 
 	private AlgorithmStepsListener getBestAchievementListener(final Map<Parameters, String> parameters) {
@@ -211,7 +178,7 @@ public class ConfigurationReader {
 
 	public Configuration readConfiguration(final String[] args) throws IOException {
 
-		Map<Parameters, String> parameters = readParamters(args);
+		Map<Parameters, String> parameters = parameterUtils.readParamters(args);
 
 		checkArgument(parameters.containsKey(Parameters.INPUT_FILE), "Input file wasn't defined!");
 
@@ -238,22 +205,6 @@ public class ConfigurationReader {
 
 		return new Configuration(inputData.getModulesGraph(), inputData.getProcessorsGraph(), probability,
 				algorithmIterations, runIterations, listeners);
-	}
-
-	private Map<Parameters, String> readParamters(final String[] args) {
-		Map<Parameters, String> result = Maps.newHashMap();
-
-		for (String param : args) {
-			String key = param.substring(0, param.indexOf(PARAM_VALUE_DELIMITER));
-
-			Parameters paramters = Parameters.getByPrefix(key);
-
-			String value = param.substring(param.indexOf(PARAM_VALUE_DELIMITER) + 1);
-			result.put(paramters, value);
-
-		}
-
-		return result;
 	}
 
 }
