@@ -1,15 +1,18 @@
-prawdopodobieñstwo	/œrendia	/mediana/	pierwsza_æwiartka (dolny kwartyl) /mediana / 3_cwiartka (górny kwartyl)/	dominanta?/ ilosc poprawna - procenty? / min/max
- przynajmniej jedna iteracja
+prawdopodobieñstwo	/œrendia/variancja/	/mediana/	pierwsza_æwiartka (dolny kwartyl) /mediana / 3_cwiartka (górny kwartyl)/	dominanta?/procent dominanty/ ilosc poprawna - procenty? / min/max
+ 
+1.
+przynajmniej jedna iteracja
 0.1 -
 0.2
 0.5
 0.8
 
-
-uwglêdniaj¹c wyniki z zerow¹ konfiguracj¹
+2.
+uwglêdniaj¹c wyniki z bez ¿adnej iteracji
 0.1 - 
 
-
+3.
+wyniki - bez zer i tylko znalezione
 
 wykresiki dla obu, uwa¿aæ na podzia³kê na dole, mo¿e bez wykresików, mo¿e tylko punkty
 
