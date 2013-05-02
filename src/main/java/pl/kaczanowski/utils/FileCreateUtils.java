@@ -13,7 +13,7 @@ public final class FileCreateUtils {
 
 	public static PrintWriter getPrintWriterWithPath(final String fileName) throws IOException {
 		File file = FileUtils.getFile(fileName);
-		if (!file.getParentFile().exists()) {
+		if (file.getParentFile() != null && !file.getParentFile().exists()) {
 			file.getParentFile().mkdirs();
 		}
 

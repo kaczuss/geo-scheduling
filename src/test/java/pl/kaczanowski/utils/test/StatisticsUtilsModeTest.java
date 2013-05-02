@@ -1,12 +1,13 @@
-package pl.kaczanowski.analyze.test;
+package pl.kaczanowski.utils.test;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.testng.annotations.Test;
 
-import pl.kaczanowski.analyze.StatisticsUtils;
+import pl.kaczanowski.utils.StatisticsUtils;
 
+import pl.kaczanowski.utils.StatisticsUtilsTest;
 @Test
 public class StatisticsUtilsModeTest extends StatisticsUtilsTest {
 

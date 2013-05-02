@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
  */
 public class IterationsToFoundBestResultListener implements AlgorithmStepsListener {
 
-	private class Execution {
+	private static class Execution {
 
 		SchedulingConfiguration best;
 

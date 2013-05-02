@@ -1,4 +1,4 @@
-package pl.kaczanowski.analyze.test;
+package pl.kaczanowski.utils;
 
 import static org.fest.assertions.Delta.delta;
 

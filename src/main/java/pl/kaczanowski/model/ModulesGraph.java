@@ -170,7 +170,7 @@ public class ModulesGraph {
 
 	public ModulesGraph(final String name, final Integer[] taskCosts, final Integer[][] taskConnections) {
 		this.name = name;
-		this.taskCosts = taskCosts;
+		this.taskCosts = Arrays.copyOf(taskCosts, taskCosts.length);
 		taskChildrenWeight = ImmutableTable.copyOf(getTaskChildrenWeight(taskConnections));
 		previousTasks = ImmutableMap.copyOf(getPreviousTasks(taskConnections));
 	}

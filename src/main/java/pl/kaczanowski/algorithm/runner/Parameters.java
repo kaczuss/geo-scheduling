@@ -13,7 +13,12 @@ public enum Parameters {
 	ITERATIONS_TO_BEST_REPORT_FILE("-iterToBest"),
 	ITERATIONS_BEST_MEAN_WORST_REPORT_FILE("-bestMeanWorst"),
 	BEST_WORST_CURRENT_REPORT_FILE("-currentBestWorst"),
-	DISTRIBUTION_REPORT_FILE("-distribution");
+	DISTRIBUTION_REPORT_FILE("-distribution"),
+	STATISTIC_DATA_DIR("-statDir"),
+	STATISTIC_NOT_FILTERED_FILE_NAME("-notFilteredStats"),
+	STATISTIC_WITHOUT_ZEROS_FILE_NAME("-withoutZerosStats"),
+	STATISTIC_WITHOUT_ZEROS_AND_NOT_FOUNDED_FILE_NAME("-withoutZerosAndNotFundedStats"),
+	STATISTIC_WITHOUT_NOT_FOUNDED_FILE_NAME("-withoutNotFundedStats");
 
 	public static Parameters getByPrefix(final String key) {
 		for (Parameters param : values()) {

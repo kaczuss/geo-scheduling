@@ -42,6 +42,40 @@ public class Processor {
 			return ComparisonChain.start().compare(o.rank, rank).compare(task.getId(), o.task.getId()).result();
 		}
 
+		@Override
+		public boolean equals(final Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof TaskRank)) {
+				return false;
+			}
+			TaskRank other = (TaskRank) obj;
+			if (rank != other.rank) {
+				return false;
+			}
+			if (task == null) {
+				if (other.task != null) {
+					return false;
+				}
+			} else if (!task.equals(other.task)) {
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + rank;
+			result = prime * result + ((task == null) ? 0 : task.hashCode());
+			return result;
+		}
+
 	}
 
 	private final Logger log = LoggerFactory.getLogger(Processor.TaskRank.class);

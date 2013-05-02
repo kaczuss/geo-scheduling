@@ -1,4 +1,4 @@
-package pl.kaczanowski.analyze;
+package pl.kaczanowski.utils;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,7 +24,7 @@ public final class StatisticsUtils {
 					int valuesCompare = Longs.compare(o1.getValue(), o2.getValue());
 					if (valuesCompare == 0) {
 						// zamieniona kolejnosc, wazniejsze sa te, ktore maja mniejsza wartosc
-						return -Longs.compare((Long) o1.getKey(), (Long) o2.getKey());
+						return Longs.compare((Long) o2.getKey(), (Long) o1.getKey());
 					}
 					return valuesCompare;
 				}
@@ -112,7 +112,7 @@ public final class StatisticsUtils {
 		}
 		Frequency f = getFrequance(values);
 		int mode = getMode(f);
-		return f.getPct(mode);
+		return f.getPct(mode) * 100;
 	}
 
 	public static Double getThirdQuartileValue(final Collection<Integer> values) {
