@@ -6,8 +6,8 @@ import static org.fest.assertions.Assertions.assertThat;
 import org.testng.annotations.Test;
 
 import pl.kaczanowski.utils.StatisticsUtils;
-
 import pl.kaczanowski.utils.StatisticsUtilsTest;
+
 @Test
 public class StatisticsUtilsModeTest extends StatisticsUtilsTest {
 
@@ -19,11 +19,11 @@ public class StatisticsUtilsModeTest extends StatisticsUtilsTest {
 	public void shouldReturnProperModePercentage() {
 		assertThat(
 				StatisticsUtils.getModePtc(newArrayList(3, 4, 3, 4, 3, 4, 5, 5, 5, 5, 5, 5, 32, 2, 1, 0, 5, 5, 5, 5)))
-				.isEqualTo(0.5, delta);
+				.isEqualTo(50, delta);
 	}
 
 	public void shouldReturnProperModePercentageSameElements() {
-		assertThat(StatisticsUtils.getModePtc(newArrayList(3, 4, 3, 4, 5))).isEqualTo(0.4, delta);
+		assertThat(StatisticsUtils.getModePtc(newArrayList(3, 4, 3, 4, 5))).isEqualTo(40, delta);
 	}
 
 	public void shouldReturnSingleElementOnSingleElementList() {
