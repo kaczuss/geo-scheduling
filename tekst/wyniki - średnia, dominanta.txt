@@ -1,0 +1,20 @@
+prawdopodobieñstwo	/œrendia	/mediana/	pierwsza_æwiartka (dolny kwartyl) /mediana / 3_cwiartka (górny kwartyl)/	dominanta?/ ilosc poprawna - procenty? / min/max
+ przynajmniej jedna iteracja
+0.1 -
+0.2
+0.5
+0.8
+
+
+uwglêdniaj¹c wyniki z zerow¹ konfiguracj¹
+0.1 - 
+
+
+
+wykresiki dla obu, uwa¿aæ na podzia³kê na dole, mo¿e bez wykresików, mo¿e tylko punkty
+
+na przyk³adzie g18 lub gaussa, typowe wykresy i porównanie wyboru gorszych konfiguracji.
+Odnieœæ siê do tego omawiaj¹c, gdzie szybciej i czêœciej znajduje najlepsze konfiguracje. Wg mnie mo¿e byæ zale¿noœæ, ¿e jak bardziej skacze to znajduje najlepsze konfiguracje.
+
+
+Zadaæ pytanie do promotor, mo¿e pokazaæ te¿ jak du¿o ró¿nych prawid³owych konfiguracji jest w stanie znaleŸæ algorytm przy ró¿nych parametrach prawdopodobieñstwa. Jeœli bêdzie trzeba odpaliæ wiecej uruchomieñ to pomyœleæ nad globalnym cachem (dla ró¿nych uruchomieñ), który dla podanej konfiguracji znajdzie wynik - bez liczenia i cache do trzymania wszystkich "ewolucji" dla danej konfiguracji.
