@@ -75,7 +75,7 @@ public class DistributionNumberToBest implements AlgorithmStepsListener {
 
 		pw.println(joiner.join("Liczba iteracji", "Ile razy otrzymano najlepszy w tej iteracji"));
 
-		for (int i = 0; i < iterationsCount; i++) {
+		for (int i = 0; i < iterationsCount + 1; i++) {
 			pw.println(joiner.join(i, numberOfIterations.count(i)));
 		}
 
