@@ -1,6 +1,7 @@
 package pl.kaczanowski.analyze;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.newArrayListWithCapacity;
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Sets.newTreeSet;
 
@@ -94,13 +95,8 @@ public class StatisticsAnalyzer {
 
 	};;
 
-	public static IterationStatData analyze(final BigDecimal probabilityParameter, final List<Integer> data) {
-
-		return analyze(probabilityParameter, data, null);
-	}
-
 	public static IterationStatData analyze(final BigDecimal probabilityParameter, final List<Integer> data,
-			final Double bestEvaulatedPerventage) {
+			final Double bestEvaulatedPerventage, final List<IterationData> iterationsData) {
 
 		Builder builder = IterationStatData.build(probabilityParameter);
 		builder.setBestEvaluatedProcentage(bestEvaulatedPerventage);
@@ -114,7 +110,19 @@ public class StatisticsAnalyzer {
 
 		builder.setMode(StatisticsUtils.getMode(data)).setModeProcentage(StatisticsUtils.getModePtc(data));
 
+		List<Integer> executionTimes = newArrayListWithCapacity(iterationsData.size());
+		for (IterationData id : iterationsData) {
+			executionTimes.add(id.executionTime);
+		}
+		builder.setExecutionTimeMean(StatisticsUtils.getMean(executionTimes));
+
 		return builder.build();
+	}
+
+	public static IterationStatData analyze(final BigDecimal probabilityParameter, final List<Integer> data,
+			final List<IterationData> iterationsData) {
+
+		return analyze(probabilityParameter, data, null, iterationsData);
 	}
 
 	private static List<Integer> asIterationsList(final List<IterationData> value) {
@@ -212,20 +220,20 @@ public class StatisticsAnalyzer {
 
 			PrintWriter pw = FileCreateUtils.getPrintWriterWithPath(fileName);
 			pw.println(joiner.join("parametr prawdopodobienstwa", "srednia", "wariancja", "min", "dolny kwartyl",
-					"mediana", "gorny kwartyl", "max", "moda", "moda procent", "procent poprawnych"));
+					"mediana", "gorny kwartyl", "max", "moda", "moda procent", "procent poprawnych", "sredni czas"));
 			Set<IterationStatData> stats = newTreeSet();
 			for (Entry<Double, List<IterationData>> entry : baseData.entrySet()) {
 				int bestCount = getBestCount(entry.getValue(), bestResult);
 
 				stats.add(analyze(BigDecimal.valueOf(entry.getKey()), asIterationsList(entry.getValue()), bestCount
-						* 100 / (double) entry.getValue().size()));
+						* 100 / (double) entry.getValue().size(), entry.getValue()));
 			}
 			for (IterationStatData stat : stats) {
 				pw.println(joiner.join(stat.getProbabilityParameter(), df.format(stat.getMean()),
 						df.format(stat.getVariance()), stat.getMin(), df.format(stat.getFirstQuartile()),
 						df.format(stat.getMedian()), df.format(stat.getThirdQuartile()), stat.getMax(),
 						stat.getMode(), df.format(stat.getModeProcentage()),
-						df.format(stat.getBestEvaluatedProcentage())));
+						df.format(stat.getBestEvaluatedProcentage()), df.format(stat.getExecutionTimeMean())));
 			}
 			pw.close();
 

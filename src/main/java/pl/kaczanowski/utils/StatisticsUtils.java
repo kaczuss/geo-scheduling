@@ -52,6 +52,11 @@ public final class StatisticsUtils {
 	}
 
 	public static Integer getMax(final Collection<Integer> values) {
+		checkNotNull(values, "List cannot be null");
+
+		if (values.isEmpty()) {
+			return null;
+		}
 		return Ints.max(Ints.toArray(values));
 	}
 
@@ -81,6 +86,11 @@ public final class StatisticsUtils {
 	}
 
 	public static Integer getMin(final Collection<Integer> values) {
+		checkNotNull(values, "List cannot be null");
+
+		if (values.isEmpty()) {
+			return null;
+		}
 		return Ints.min(Ints.toArray(values));
 	}
 
