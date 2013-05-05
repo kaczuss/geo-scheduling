@@ -1,6 +1,9 @@
 --set ALGORITHM=tree15
-set ALGORITHM=g18
-set BEST=46
+--set BEST=9
+--set ALGORITHM=g18
+--set BEST=46
+set ALGORITHM=g40
+set BEST=80
 
 set ITERATIONS=100
 
