@@ -154,9 +154,16 @@ public class GeoSchedulingAlgorithm {
 			algorithmStepsListener.addCurrentConfiguration(currentConfiguration);
 
 			log.debug("current configuration is " + currentConfiguration);
+			SchedulingConfiguration bestInCurrentIteration = configurations.get(0);
+			// sprawdzam czy czas wykonania jest ten sam najlepszego i wybrenej konfiguracji, jesli tak to
+			// przypisuje wybrany jako najlepsza konfiguracja
+			if (bestInCurrentIteration != currentConfiguration
+					&& bestInCurrentIteration.getExecutionTime() == currentConfiguration.getExecutionTime()) {
+				bestInCurrentIteration = currentConfiguration;
+			}
 
-			if (currentConfiguration.getExecutionTime() < bestConfiguration.getExecutionTime()) {
-				bestConfiguration = currentConfiguration;
+			if (bestInCurrentIteration.getExecutionTime() < bestConfiguration.getExecutionTime()) {
+				bestConfiguration = bestInCurrentIteration;
 			}
 
 			algorithmStepsListener.addBestConfiguration(bestConfiguration);
