@@ -2,12 +2,12 @@
 set ALGORITHM=gauss18_8
 set BEST=44
 
-set RUN_ITERATIONS=500
-set ITERATIONS=100
+set RUN_ITERATIONS=10
+set ITERATIONS=2000
 
 
 
-set BASE_REPORT_DIR=G:/dokumenty/magisterka-geo-szer/raport/%ALGORITHM%/%date%/proc8
+set BASE_REPORT_DIR=G:/dokumenty/magisterka-geo-szer/raport/%ALGORITHM%/%date%(%ITERATIONS%)/proc8
 
 set PROB=0.5
 set PROB_DIR_NAME=0_5

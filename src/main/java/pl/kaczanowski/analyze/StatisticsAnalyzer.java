@@ -135,6 +135,18 @@ public class StatisticsAnalyzer {
 		return result;
 	}
 
+	private static Object format(final BigDecimal value) {
+		return value == null ? "null" : value;
+	}
+
+	private static String format(final Double value) {
+		return value == null ? "null" : df.format(value);
+	}
+
+	private static Object format(final Integer value) {
+		return value == null ? "null" : value;
+	}
+
 	private static int getBestCount(final List<IterationData> value, final Integer bestResult) {
 		int i = 0;
 		for (IterationData data : value) {
@@ -229,11 +241,11 @@ public class StatisticsAnalyzer {
 						* 100 / (double) entry.getValue().size(), entry.getValue()));
 			}
 			for (IterationStatData stat : stats) {
-				pw.println(joiner.join(stat.getProbabilityParameter(), df.format(stat.getMean()),
-						df.format(stat.getVariance()), stat.getMin(), df.format(stat.getFirstQuartile()),
-						df.format(stat.getMedian()), df.format(stat.getThirdQuartile()), stat.getMax(),
-						stat.getMode(), df.format(stat.getModeProcentage()),
-						df.format(stat.getBestEvaluatedProcentage()), df.format(stat.getExecutionTimeMean())));
+				pw.println(joiner.join(format(stat.getProbabilityParameter()), format(stat.getMean()),
+						format(stat.getVariance()), format(stat.getMin()), format(stat.getFirstQuartile()),
+						format(stat.getMedian()), format(stat.getThirdQuartile()), format(stat.getMax()),
+						format(stat.getMode()), format(stat.getModeProcentage()),
+						format(stat.getBestEvaluatedProcentage()), format(stat.getExecutionTimeMean())));
 			}
 			pw.close();
 
