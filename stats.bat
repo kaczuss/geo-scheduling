@@ -1,18 +1,16 @@
-set ALGORITHM=tree15
-set BEST=9
+--set ALGORITHM=tree15
+--set BEST=9
 --set ALGORITHM=intree15
 --set BEST=9
 --set ALGORITHM=g18
 --set BEST=46
 --set ALGORITHM=g40
 --set BEST=80
---set ALGORITHM=gauss18
---set BEST=44
+set ALGORITHM=gauss18
+set BEST=44
 
-set ITERATIONS=100
-
-
-set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\2013-05-02\%ALGORITHM%\2013-05-02
+set BASE_REPORT_DIR="G:\dokumenty\magisterka-geo-szer\raport\%ALGORITHM%\bestInIteration\2013-05-06\400 iteracji"
+--set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\2013-05-02\%ALGORITHM%\2013-05-02
 
 java -cp "target/scheduling-geo-0.0.1-SNAPSHOT-jar-with-dependencies.jar" pl.kaczanowski.analyze.StatisticsAnalyzer  -best=%BEST%  -statDir=%BASE_REPORT_DIR% -notFilteredStats=%BASE_REPORT_DIR%/statsNotFiltered.csv -withoutNotFundedStats=%BASE_REPORT_DIR%/statsWithoutNotFound.csv -withoutZerosStats=%BASE_REPORT_DIR%/statsWithoutZeros.csv -withoutZerosAndNotFundedStats=%BASE_REPORT_DIR%/statsTotalyFiltered.csv
 
