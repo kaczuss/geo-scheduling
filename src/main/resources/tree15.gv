@@ -1,0 +1,32 @@
+digraph tree15 {
+graph [page="11.7,8.3"];
+0 -> 1 [label="1"];
+0 -> 2 [label="1"];
+1 -> 3 [label="1"];
+1 -> 4 [label="1"];
+2 -> 5 [label="1"];
+2 -> 6 [label="1"];
+3 -> 7 [label="1"];
+3 -> 8 [label="1"];
+4 -> 9 [label="1"];
+4 -> 10 [label="1"];
+5 -> 11 [label="1"];
+5 -> 12 [label="1"];
+6 -> 13 [label="1"];
+6 -> 14 [label="1"];
+0 [label=<<TABLE border="0"><TR><TD>0</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+1 [label=<<TABLE border="0"><TR><TD>1</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+2 [label=<<TABLE border="0"><TR><TD>2</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+3 [label=<<TABLE border="0"><TR><TD>3</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+4 [label=<<TABLE border="0"><TR><TD>4</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+5 [label=<<TABLE border="0"><TR><TD>5</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+6 [label=<<TABLE border="0"><TR><TD>6</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+7 [label=<<TABLE border="0"><TR><TD>7</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+8 [label=<<TABLE border="0"><TR><TD>8</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+9 [label=<<TABLE border="0"><TR><TD>9</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+10 [label=<<TABLE border="0"><TR><TD>10</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+11 [label=<<TABLE border="0"><TR><TD>11</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+12 [label=<<TABLE border="0"><TR><TD>12</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+13 [label=<<TABLE border="0"><TR><TD>13</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+14 [label=<<TABLE border="0"><TR><TD>14</TD></TR><TR><TD border="1" bgcolor="grey">1</TD></TR></TABLE>>];
+}

@@ -18,7 +18,8 @@ public enum Parameters {
 	STATISTIC_NOT_FILTERED_FILE_NAME("-notFilteredStats"),
 	STATISTIC_WITHOUT_ZEROS_FILE_NAME("-withoutZerosStats"),
 	STATISTIC_WITHOUT_ZEROS_AND_NOT_FOUNDED_FILE_NAME("-withoutZerosAndNotFundedStats"),
-	STATISTIC_WITHOUT_NOT_FOUNDED_FILE_NAME("-withoutNotFundedStats");
+	STATISTIC_WITHOUT_NOT_FOUNDED_FILE_NAME("-withoutNotFundedStats"),
+	GRAPHVIZ_FILE("-graphviz");
 
 	public static Parameters getByPrefix(final String key) {
 		for (Parameters param : values()) {
