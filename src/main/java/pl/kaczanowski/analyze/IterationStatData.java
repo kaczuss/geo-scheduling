@@ -24,6 +24,7 @@ public class IterationStatData implements Comparable<IterationStatData> {
 		private Double bestEvaluatedProcentage;
 
 		private Double executionTimeMean;
+		private Integer bestResult;
 
 		private Builder(final BigDecimal probabilityParameter) {
 			probabilityParam = probabilityParameter;
@@ -43,12 +44,18 @@ public class IterationStatData implements Comparable<IterationStatData> {
 			statData.modeProcentage = modeProcentage;
 			statData.bestEvaluatedProcentage = bestEvaluatedProcentage;
 			statData.executionTimeMean = executionTimeMean;
+			statData.bestResult = bestResult;
 
 			return statData;
 		}
 
 		public Builder setBestEvaluatedProcentage(final Double bestEvaluatedProcentage) {
 			this.bestEvaluatedProcentage = bestEvaluatedProcentage;
+			return this;
+		}
+
+		public Builder setBestResult(final Integer bestResult) {
+			this.bestResult = bestResult;
 			return this;
 		}
 
@@ -131,6 +138,7 @@ public class IterationStatData implements Comparable<IterationStatData> {
 	private Double bestEvaluatedProcentage;
 
 	private Double executionTimeMean;
+	private Integer bestResult;
 
 	private IterationStatData(final BigDecimal probabilityParameter) {
 		this.probabilityParameter = probabilityParameter;
@@ -165,6 +173,10 @@ public class IterationStatData implements Comparable<IterationStatData> {
 
 	public Double getBestEvaluatedProcentage() {
 		return bestEvaluatedProcentage;
+	}
+
+	public Integer getBestResult() {
+		return bestResult;
 	}
 
 	public Double getExecutionTimeMean() {

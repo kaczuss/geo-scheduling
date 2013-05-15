@@ -115,6 +115,7 @@ public class StatisticsAnalyzer {
 			executionTimes.add(id.executionTime);
 		}
 		builder.setExecutionTimeMean(StatisticsUtils.getMean(executionTimes));
+		builder.setBestResult(StatisticsUtils.getMin(executionTimes));
 
 		return builder.build();
 	}
@@ -232,7 +233,8 @@ public class StatisticsAnalyzer {
 
 			PrintWriter pw = FileCreateUtils.getPrintWriterWithPath(fileName);
 			pw.println(joiner.join("parametr prawdopodobienstwa", "srednia", "wariancja", "min", "dolny kwartyl",
-					"mediana", "gorny kwartyl", "max", "moda", "moda procent", "procent poprawnych", "sredni czas"));
+					"mediana", "gorny kwartyl", "max", "moda", "moda procent", "procent poprawnych", "sredni czas",
+					"najlepszy wynik"));
 			Set<IterationStatData> stats = newTreeSet();
 			for (Entry<Double, List<IterationData>> entry : baseData.entrySet()) {
 				int bestCount = getBestCount(entry.getValue(), bestResult);
@@ -245,7 +247,8 @@ public class StatisticsAnalyzer {
 						format(stat.getVariance()), format(stat.getMin()), format(stat.getFirstQuartile()),
 						format(stat.getMedian()), format(stat.getThirdQuartile()), format(stat.getMax()),
 						format(stat.getMode()), format(stat.getModeProcentage()),
-						format(stat.getBestEvaluatedProcentage()), format(stat.getExecutionTimeMean())));
+						format(stat.getBestEvaluatedProcentage()), format(stat.getExecutionTimeMean()),
+						format(stat.getBestResult())));
 			}
 			pw.close();
 
