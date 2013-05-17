@@ -6,22 +6,27 @@ REM set ALGORITHM=g18
 REM set BEST=46
 REM set ALGORITHM=g18_8
 REM set BEST=24
+REM set ALGORITHM=g18_4
+REM set BEST=26
 REM set ALGORITHM=g40
 REM set BEST=80
-REM set ALGORITHM=g40_4
-REM set BEST=45
+set ALGORITHM=g40_4
+set BEST=45
 REM set ALGORITHM=g40_8
 REM set BEST=33
-set ALGORITHM=gauss18
-set BEST=44
+REM set ALGORITHM=gauss18
+REM set BEST=44
 REM set ALGORITHM=gauss18_8
 REM set BEST=44
+REM set ALGORITHM=tree15_4
+REM set BEST=7
 
 
 REM set BASE_REPORT_DIR="G:\dokumenty\magisterka-geo-szer\raport\%ALGORITHM%\bestInIteration\2013-05-06\400 iteracji"
-set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\2013-05-02\%ALGORITHM%\2013-05-02
+REM set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\2013-05-02\%ALGORITHM%\2013-05-02
 REM set BASE_REPORT_DIR="G:\dokumenty\magisterka-geo-szer\raport\gauss18\bestInIteration\2013-05-06\400 iteracji"
 REM set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\%ALGORITHM%\2013-05-05\proc4
+set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\g40_4(500)\2013-05-08\proc4
 REM set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\%ALGORITHM%\2013-05-07\proc8
 REM set BASE_REPORT_DIR=G:\dokumenty\magisterka-geo-szer\raport\%ALGORITHM%\2013-05-07(4000)\proc8
 
