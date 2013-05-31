@@ -1,0 +1,21 @@
+#koszt poszczgolnego modulu
+3;4;6;5;2;6;7;1
+
+#macierz modulów - jesli zależa to wartość = wadze krawędzi
+;;1;2;;;;
+;;3;;2;;;
+;;;;;2;;
+;;;;;2;;
+;;;;;;5;
+;;;;;;;1
+;;;;;;;1
+;;;;;;;
+
+#liczba procesorów
+2
+
+#koszt/mnożna zmiany procesora
+;1
+1;
+
+
