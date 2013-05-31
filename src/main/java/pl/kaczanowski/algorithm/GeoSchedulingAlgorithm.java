@@ -147,6 +147,18 @@ public class GeoSchedulingAlgorithm {
 			}
 
 			configurations = Ordering.natural().sortedCopy(configurations);
+
+			if (log.isDebugEnabled()) {
+				StringBuilder sb = new StringBuilder();
+				for (int j = 0; j < configurations.size(); j++) {
+					SchedulingConfiguration conf = configurations.get(j);
+					sb.append("ranking ").append(j).append(" konfiguracja ").append(conf).append("\r\n");
+
+				}
+
+				log.debug("dostepne konfiguracje posortowane: \r\n{}", sb);
+			}
+
 			algorithmStepsListener.addStepConfigurations(configurations);
 
 			currentConfiguration = chooseNextConfiguration(configurations);
