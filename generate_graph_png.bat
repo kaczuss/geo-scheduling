@@ -1,6 +1,6 @@
 ﻿@echo off
 
-set graphs=tree15,intree15,g18,g40,gauss18
+set graphs=przykladowy_4
 
 for %%i in (%graphs%) do (
 	java -cp "target/scheduling-geo-0.0.1-SNAPSHOT-jar-with-dependencies.jar" pl.kaczanowski.graphviz.GraphvizRunner  -f=src/main/resources/%%i.txt -graphviz=src/main/resources/%%i.gv
