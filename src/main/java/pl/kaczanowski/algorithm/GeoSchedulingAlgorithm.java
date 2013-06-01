@@ -2,6 +2,7 @@ package pl.kaczanowski.algorithm;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.text.MessageFormat.format;
 
 import java.util.List;
 import java.util.Random;
@@ -109,11 +110,17 @@ public class GeoSchedulingAlgorithm {
 
 		double randProb = rand.nextDouble();
 
-		// FIXME is change to infinite loop?
+		if (log.isDebugEnabled()) {
+			log.debug(format("wylosowane prawdopodobienstwo {0}", randProb));
+			log.debug(format("test zmiany {0}", toChange));
+		}
 
 		double changeIntProb = Math.pow(1.0 / (toChange + 1), probabilityParamter);
 		while (changeIntProb < randProb) {
 			toChange = rand.nextInt(configurations.size());
+			if (log.isDebugEnabled()) {
+				log.debug(format("test zmiany {0}", toChange));
+			}
 			changeIntProb = Math.pow(1.0 / (toChange + 1), probabilityParamter);
 
 		}
@@ -147,6 +154,18 @@ public class GeoSchedulingAlgorithm {
 			}
 
 			configurations = Ordering.natural().sortedCopy(configurations);
+
+			if (log.isDebugEnabled()) {
+				StringBuilder sb = new StringBuilder();
+				for (int j = 0; j < configurations.size(); j++) {
+					SchedulingConfiguration conf = configurations.get(j);
+					sb.append("ranking ").append(j).append(" konfiguracja ").append(conf).append("\r\n");
+
+				}
+
+				log.debug("dostepne konfiguracje posortowane: \r\n{}", sb);
+			}
+
 			algorithmStepsListener.addStepConfigurations(configurations);
 
 			currentConfiguration = chooseNextConfiguration(configurations);

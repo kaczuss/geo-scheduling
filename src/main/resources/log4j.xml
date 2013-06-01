@@ -8,21 +8,36 @@
 			<param name="ConversionPattern" value="%-5p %c{1} - %m%n" />
 		</layout>
 	</appender>
-	
+
 	<appender name="testFile" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="File" value="c:/temp/mgr/test.log" />
 		<param name="Append" value="true" />
-		<param name="DatePattern" value=".yyyy-mm-dd"/>
+		<param name="DatePattern" value=".yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{HH:mm:ss:SSS} %-5p %c{1} - %m%n" />
 		</layout>
 	</appender>
 
+	<appender name="przukladowyFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="c:/temp/mgr/przykladowy.log" />
+		<param name="Append" value="true" />
+		<param name="DatePattern" value=".yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{HH:mm:ss:SSS} %-5p %c{1} %M %L - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- <root> -->
+	<!-- <priority value="info" /> -->
+	<!-- <appender-ref ref="console" /> -->
+	<!-- <appender-ref ref="testFile" /> -->
+	<!-- </root> -->
+
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
-		<appender-ref ref="testFile" />
+		<appender-ref ref="przukladowyFile" />
 	</root>
-	
+
 
 </log4j:configuration>

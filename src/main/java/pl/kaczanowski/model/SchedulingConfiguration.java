@@ -2,10 +2,14 @@ package pl.kaczanowski.model;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.kaczanowski.algorithm.SchedulingAlgorithm;
 import pl.kaczanowski.utils.MathUtils;
@@ -56,6 +60,8 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 		throw new IllegalArgumentException("use ony processor number equals to 2 ^ n where n <= 6 ");
 
 	}
+
+	private final Logger log = LoggerFactory.getLogger(SchedulingConfiguration.class);
 
 	private final byte[] bits;
 
@@ -131,6 +137,11 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 			partial.get(MathUtils.getProcNumber(procByteArrayNumber)).add(task);
 		}
 
+		if (log.isDebugEnabled()) {
+			log.debug(new StringBuilder().append("konfiguracja o numerze ").append(toNumber(bits)).append(" ")
+					.append(Arrays.toString(bits)).append(" z podzialem na procesory ").append(partial).toString());
+		}
+
 		return partial;
 	}
 
@@ -151,12 +162,26 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 		evolutionBit = 0;
 	}
 
+	private BigInteger toNumber(final byte[] bitesAsByte) {
+		BigInteger value = BigInteger.ONE;
+
+		for (int i = 0; i < bitesAsByte.length; i++) {
+			byte b = bitesAsByte[i];
+			if (b != 0) {
+				value = value.multiply(BigInteger.valueOf(1 << (bitesAsByte.length - i - 1)));
+			}
+		}
+
+		return value;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SchedulingConfiguration [bits=").append(Arrays.toString(bits)).append(", bitesForProcessor=")
-				.append(bitesForProcessor).append(", evolutionBit=").append(evolutionBit).append(", executionTime=")
-				.append(executionTime).append("]");
+		builder.append("SchedulingConfiguration [id=").append(toNumber(bits)).append(", bits=")
+				.append(Arrays.toString(bits)).append(", bitesForProcessor=").append(bitesForProcessor)
+				.append(", evolutionBit=").append(evolutionBit).append(", executionTime=").append(executionTime)
+				.append("]");
 		return builder.toString();
 	}
 
