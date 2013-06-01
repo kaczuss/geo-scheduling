@@ -18,7 +18,7 @@
 		</layout>
 	</appender>
 
-	<appender name="przukladowyFile" class="org.apache.log4j.DailyRollingFileAppender">
+	<appender name="przykladowyFile" class="org.apache.log4j.DailyRollingFileAppender">
 		<param name="File" value="c:/temp/mgr/przykladowy.log" />
 		<param name="Append" value="true" />
 		<param name="DatePattern" value=".yyyy-MM-dd" />
