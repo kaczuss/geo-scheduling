@@ -1,9 +1,11 @@
 package pl.kaczanowski.model;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import pl.kaczanowski.algorithm.SchedulingAlgorithm;
 import pl.kaczanowski.utils.MathUtils;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -28,6 +31,30 @@ public class SchedulingConfiguration implements Comparable<SchedulingConfigurati
 
 		SchedulingConfiguration configuration = new SchedulingConfiguration(bytes, bitsForProcessor);
 		configuration.executionTime = schedulingAlgorithm.getExecutionTime(configuration.getProcessorsPartial());
+		return configuration;
+	}
+
+	public static SchedulingConfiguration createConfigurationFromInput(final int tasksNumber,
+			final int processorsNumber, final String initProcesorPartial,
+			final SchedulingAlgorithm schedulingAlgorithm) {
+		int bitsForProcessor = getBitsForProcessor(processorsNumber);
+		int bitsCount = tasksNumber * bitsForProcessor;
+		byte[] bytes = new byte[bitsCount];
+
+		List<String> split = newArrayList(Splitter.on(",").split(initProcesorPartial));
+
+		for (int i = 0; i < split.size(); i++) {
+			int number = Integer.valueOf(split.get(i));
+			char[] binaryString = Integer.toBinaryString(number).toCharArray();
+			for (int j = 0; j < binaryString.length; ++j) {
+				byte value = Byte.valueOf(String.valueOf(binaryString[j]));
+				bytes[i * bitsForProcessor + j] = value;
+			}
+		}
+
+		SchedulingConfiguration configuration = new SchedulingConfiguration(bytes, bitsForProcessor);
+		configuration.executionTime = schedulingAlgorithm.getExecutionTime(configuration.getProcessorsPartial());
+
 		return configuration;
 	}
 

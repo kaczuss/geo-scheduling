@@ -12,14 +12,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
-public class DynamicHeightAlgorithm implements HeightAlgorithm {
+public class StandardHeightAlgorithm implements HeightAlgorithm {
 
 	public static class Factory implements HeightAlgorithmFactory {
 
 		@Override
-		public DynamicHeightAlgorithm create(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
+		public StandardHeightAlgorithm create(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
 				final Map<Integer, Set<Integer>> processorDevision) {
-			return new DynamicHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
+			return new StandardHeightAlgorithm(modulesGraph, processorsGraph, processorDevision);
 		}
 	}
 
@@ -31,7 +31,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
 	private final Map<Integer, Integer> taskToProcessor;
 
-	private DynamicHeightAlgorithm(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
+	private StandardHeightAlgorithm(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
 			final Map<Integer, Set<Integer>> processorDevision) {
 		this.modulesGraph = modulesGraph;
 		this.processorsGraph = processorsGraph;
@@ -51,7 +51,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 		Set<Integer> changeWeight = Sets.newTreeSet();
 		changeWeight.add(0);
 		for (Integer parentTaskId : parentsTasks) {
-			changeWeight.add(processorsGraph.getChangeCost(taskToProcessor.get(parentTaskId),
+			changeWeight.add(processorsGraph.getConnectionCost(taskToProcessor.get(parentTaskId),
 					taskToProcessor.get(taskId))
 					* modulesGraph.getChangeTime(parentTaskId, taskId));
 		}
@@ -84,7 +84,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 
 		for (Integer childTaskId : childrenTasks) {
 			int changeWeight =
-					processorsGraph.getChangeCost(taskToProcessor.get(taskId), taskToProcessor.get(childTaskId))
+					processorsGraph.getConnectionCost(taskToProcessor.get(taskId), taskToProcessor.get(childTaskId))
 							* modulesGraph.getChangeTime(taskId, childTaskId);
 			changeWeight += getSimpleCost(childTaskId);
 			// log.info("on child " + childTaskId + " weight= " + changeWeight);
@@ -98,7 +98,7 @@ public class DynamicHeightAlgorithm implements HeightAlgorithm {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("DynamicHeightAlgorithm [modulesGraph=");
+		builder.append("StandardHeightAlgorithm [modulesGraph=");
 		builder.append(modulesGraph);
 		builder.append(", processorsGraph=");
 		builder.append(processorsGraph);

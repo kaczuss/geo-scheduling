@@ -1,0 +1,46 @@
+dynamiczny
+
+DEBUG SchedulingConfiguration - konfiguracja o numerze 32768 [1, 1, 0, 0, 0, 1, 0, 1] z podzialem na procesory {0=[2, 3, 4, 6], 1=[0, 1, 5, 7]}
+DEBUG Processor$TaskRank - task 1 start running at 0 on processor 1 from ticks: 4
+DEBUG Processor$TaskRank - task 0 start running at 4 on processor 1 from ticks: 3
+DEBUG Processor$TaskRank - task 4 start running at 6 on processor 0 from ticks: 2
+DEBUG Processor$TaskRank - task 2 start running at 8 on processor 0 from ticks: 6
+DEBUG Processor$TaskRank - task 3 start running at 14 on processor 0 from ticks: 5
+DEBUG Processor$TaskRank - task 6 start running at 19 on processor 0 from ticks: 7
+DEBUG Processor$TaskRank - task 5 start running at 21 on processor 1 from ticks: 6
+DEBUG Processor$TaskRank - task 7 start running at 31 on processor 1 from ticks: 1
+DEBUG GeoSchedulingAlgorithm - start configuration is SchedulingConfiguration [id=32768, bits=[1, 1, 0, 0, 0, 1, 0, 1], bitesForProcessor=1, evolutionBit=0, executionTime=32]
+Uruchomienie 1 znalaz³o konfiguracjê: SchedulingConfiguration [id=32768, bits=[1, 1, 0, 0, 0, 1, 0, 1], bitesForProcessor=1, evolutionBit=0, executionTime=32]
+
+
+
+wysokosc
+DEBUG SchedulingConfiguration - konfiguracja o numerze 32768 [1, 1, 0, 0, 0, 1, 0, 1] z podzialem na procesory {0=[2, 3, 4, 6], 1=[0, 1, 5, 7]}
+DEBUG Processor$TaskRank - task 1 start running at 0 on processor 1 from ticks: 4
+DEBUG Processor$TaskRank - task 0 start running at 4 on processor 1 from ticks: 3
+DEBUG Processor$TaskRank - task 4 start running at 6 on processor 0 from ticks: 2
+DEBUG Processor$TaskRank - task 2 start running at 8 on processor 0 from ticks: 6
+DEBUG Processor$TaskRank - task 6 start running at 14 on processor 0 from ticks: 7
+DEBUG Processor$TaskRank - task 3 start running at 21 on processor 0 from ticks: 5
+DEBUG Processor$TaskRank - task 5 start running at 28 on processor 1 from ticks: 6
+DEBUG Processor$TaskRank - task 7 start running at 34 on processor 1 from ticks: 1
+DEBUG GeoSchedulingAlgorithm - start configuration is SchedulingConfiguration [id=32768, bits=[1, 1, 0, 0, 0, 1, 0, 1], bitesForProcessor=1, evolutionBit=0, executionTime=35]
+Uruchomienie 1 znalaz³o konfiguracjê: SchedulingConfiguration [id=32768, bits=[1, 1, 0, 0, 0, 1, 0, 1], bitesForProcessor=1, evolutionBit=0, executionTime=35]
+
+
+nastêpniki
+
+DEBUG SchedulingConfiguration - konfiguracja o numerze 32768 [1, 1, 0, 0, 0, 1, 0, 1] z podzialem na procesory {0=[2, 3, 4, 6], 1=[0, 1, 5, 7]}
+DEBUG Processor$TaskRank - task 0 start running at 0 on processor 1 from ticks: 3
+DEBUG Processor$TaskRank - task 1 start running at 3 on processor 1 from ticks: 4
+DEBUG Processor$TaskRank - task 3 start running at 5 on processor 0 from ticks: 5
+DEBUG Processor$TaskRank - task 2 start running at 10 on processor 0 from ticks: 6
+DEBUG Processor$TaskRank - task 4 start running at 16 on processor 0 from ticks: 2
+DEBUG Processor$TaskRank - task 6 start running at 18 on processor 0 from ticks: 7
+DEBUG Processor$TaskRank - task 5 start running at 18 on processor 1 from ticks: 6
+DEBUG Processor$TaskRank - task 7 start running at 30 on processor 1 from ticks: 1
+DEBUG GeoSchedulingAlgorithm - start configuration is SchedulingConfiguration [id=32768, bits=[1, 1, 0, 0, 0, 1, 0, 1], bitesForProcessor=1, evolutionBit=0, executionTime=31]
+Uruchomienie 1 znalaz³o konfiguracjê: SchedulingConfiguration [id=32768, bits=[1, 1, 0, 0, 0, 1, 0, 1], bitesForProcessor=1, evolutionBit=0, executionTime=31]
+
+
+

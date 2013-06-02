@@ -47,12 +47,12 @@ public class GeoSchedulingAlgorithm {
 		public GeoSchedulingAlgorithm build() {
 			checkNotNull(modulesGraph, "modules graph must be set");
 			checkNotNull(processorsGraph, "processors graph must be set");
-			checkArgument(iterations > 0, "iterations must be positive value");
+			checkArgument(iterations >= 0, "iterations must be positive value");
 			checkArgument(probabilityParamter > 0, "parameter must be positive value");
 
-			GeoSchedulingAlgorithm ret = new GeoSchedulingAlgorithm(schedulingAlgorithmFactory, stepsListener);
-			ret.modulesGraph = modulesGraph;
-			ret.processorsGraph = processorsGraph;
+			GeoSchedulingAlgorithm ret =
+					new GeoSchedulingAlgorithm(modulesGraph, processorsGraph, schedulingAlgorithmFactory,
+							stepsListener);
 			ret.iterations = iterations;
 			ret.probabilityParamter = probabilityParamter;
 
@@ -86,21 +86,23 @@ public class GeoSchedulingAlgorithm {
 
 	}
 
-	private ModulesGraph modulesGraph;
-	private ProcessorsGraph processorsGraph;
+	private final ModulesGraph modulesGraph;
+	private final ProcessorsGraph processorsGraph;
 	private double probabilityParamter;
 	private int iterations;
 
-	private final SchedulingAlgorithm.Factory schedulingAlgorithmFactory;
-
 	private final Logger log = LoggerFactory.getLogger(GeoSchedulingAlgorithm.class);
 	private final AlgorithmStepsListener algorithmStepsListener;
+	private final SchedulingAlgorithm schedulingAlgorithm;
 
-	private GeoSchedulingAlgorithm(final Factory schedulingAlgorithmFactory,
-			final AlgorithmStepsListener stepsListener) {
-		this.schedulingAlgorithmFactory = schedulingAlgorithmFactory;
+	private GeoSchedulingAlgorithm(final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph,
+			final Factory schedulingAlgorithmFactory, final AlgorithmStepsListener stepsListener) {
+		this.modulesGraph = modulesGraph;
+		this.processorsGraph = processorsGraph;
 		this.algorithmStepsListener =
 				stepsListener == null ? new AlgorithmStepsListenerContainer(null) : stepsListener;
+
+		schedulingAlgorithm = schedulingAlgorithmFactory.create(modulesGraph, processorsGraph);
 	}
 
 	private SchedulingConfiguration chooseNextConfiguration(final List<SchedulingConfiguration> configurations) {
@@ -129,11 +131,16 @@ public class GeoSchedulingAlgorithm {
 
 	public SchedulingConfiguration execute() {
 
-		SchedulingAlgorithm schedulingAlgorithm = schedulingAlgorithmFactory.create(modulesGraph, processorsGraph);
-
-		SchedulingConfiguration bestConfiguration =
+		SchedulingConfiguration runConfiguration =
 				SchedulingConfiguration.createRandomConfiguration(modulesGraph.getTasksNumber(),
 						processorsGraph.getProcessorsCount(), schedulingAlgorithm);
+
+		return execute(runConfiguration);
+	}
+
+	public SchedulingConfiguration execute(final SchedulingConfiguration initConf) {
+
+		SchedulingConfiguration bestConfiguration = initConf;
 
 		SchedulingConfiguration currentConfiguration = bestConfiguration;
 
@@ -193,4 +200,9 @@ public class GeoSchedulingAlgorithm {
 
 		return bestConfiguration;
 	}
+
+	public SchedulingAlgorithm getSchedulingAlgorithm() {
+		return schedulingAlgorithm;
+	}
+
 }

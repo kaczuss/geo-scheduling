@@ -38,7 +38,11 @@ public class GeoSchedulingRunner {
 							.setIterations(configuration.getAlgorithmIterations())
 							.setStepsListener(configuration.getListener()).build();
 
-			SchedulingConfiguration scheduling = algorithm.execute();
+			SchedulingConfiguration runConfiguration =
+					SchedulingConfiguration.createConfigurationFromInput(configuration.getModulesGraph()
+							.getTasksNumber(), configuration.getProcessorsGraph().getProcessorsCount(), configuration
+							.getInitProcesorPartial(), algorithm.getSchedulingAlgorithm());
+			SchedulingConfiguration scheduling = algorithm.execute(runConfiguration);
 
 			System.out.println(MessageFormat.format("Uruchomienie {0} znalazło konfigurację: {1}", (i + 1),
 					scheduling.toString()));

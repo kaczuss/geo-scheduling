@@ -19,6 +19,8 @@ public class AlgorithmModule extends AbstractModule {
 	protected void configure() {
 
 		// bind(ConfigurationHelper.class).to(ConfigurationHelper.class);
-
+		// bind(HeightAlgorithmFactory.class).to(StandardHeightAlgorithm.Factory.class);
+		// bind(HeightAlgorithmFactory.class).to(DynamicHeightAlgorithm.Factory.class);
+		bind(HeightAlgorithmFactory.class).to(ChildNodesAlgorithm.Factory.class);
 	}
 }

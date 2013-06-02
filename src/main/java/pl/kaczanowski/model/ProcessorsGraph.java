@@ -32,6 +32,10 @@ public class ProcessorsGraph {
 		return processorA == processorB ? 0 : connections[processorA][processorB];
 	}
 
+	public int getConnectionCost(final int processorA, final int processorB) {
+		return connections[processorA][processorB];
+	}
+
 	public List<Processor> getProcessorCopies(final Map<Integer, Set<Task>> processorsPartial) {
 
 		return Lists.newArrayList(Lists.transform(

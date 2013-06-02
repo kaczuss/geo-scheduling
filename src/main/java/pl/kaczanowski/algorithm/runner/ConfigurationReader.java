@@ -65,6 +65,10 @@ public class ConfigurationReader {
 			return algorithmIterations;
 		}
 
+		public String getInitProcesorPartial() {
+			return "1,1,0,0,0,1,0,1";
+		}
+
 		public AlgorithmStepsListener getListener() {
 			return listenerCollection;
 		}

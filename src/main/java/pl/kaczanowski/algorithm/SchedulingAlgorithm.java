@@ -27,10 +27,10 @@ public class SchedulingAlgorithm {
 
 	public static class Factory {
 
-		private final DynamicHeightAlgorithm.Factory heightAlgorithm;
+		private final HeightAlgorithmFactory heightAlgorithm;
 
 		@Inject
-		public Factory(@Nonnull final DynamicHeightAlgorithm.Factory heightAlgorithm) {
+		public Factory(@Nonnull final HeightAlgorithmFactory heightAlgorithm) {
 			this.heightAlgorithm = heightAlgorithm;
 		}
 
@@ -41,13 +41,20 @@ public class SchedulingAlgorithm {
 
 	}
 
-	private final DynamicHeightAlgorithm.Factory heightAlgorithmFactory;
+	private final HeightAlgorithmFactory heightAlgorithmFactory;
 	private final ModulesGraph modulesGraph;
 
 	private final ProcessorsGraph processorsGraph;
 
-	private SchedulingAlgorithm(final DynamicHeightAlgorithm.Factory heightAlgorithmFactory,
-			final ModulesGraph modulesGraph, final ProcessorsGraph processorsGraph) {
+	/**
+	 * @param heightAlgorithmFactory
+	 * @param standardHeightAlgorithmFactory
+	 * @param childNodesAlgorithmFactory
+	 * @param modulesGraph
+	 * @param processorsGraph
+	 */
+	public SchedulingAlgorithm(final HeightAlgorithmFactory heightAlgorithmFactory, final ModulesGraph modulesGraph,
+			final ProcessorsGraph processorsGraph) {
 		this.heightAlgorithmFactory = heightAlgorithmFactory;
 		this.modulesGraph = modulesGraph;
 		this.processorsGraph = processorsGraph;
